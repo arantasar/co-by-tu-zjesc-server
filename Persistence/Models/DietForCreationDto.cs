@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Persistence.Models
 {
-    class DietForCreationDto : CreateWithNameDto
+    public class DietForCreationDto : CreateWithNameDto
     {
     }
 }

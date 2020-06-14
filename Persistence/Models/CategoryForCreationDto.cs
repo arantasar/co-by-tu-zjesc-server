@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Persistence.Models
 {
-    class CategoryForCreationDto : CreateWithNameDto
+    public class CategoryForCreationDto : CreateWithNameDto
     {
     }
 }

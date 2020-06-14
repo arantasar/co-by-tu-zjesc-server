@@ -35,6 +35,8 @@ namespace API
             services.AddControllers();
             services.AddSingleton<IUnitRepository, UnitRepository>();
             services.AddSingleton<IIngredientRepository, IngredientRepository>();
+            services.AddSingleton<ICategoryRepository, CategoryRepository>();
+            services.AddSingleton<IDietRepository, DietRepository>();
             services.AddSingleton(elastic);
             services.AddCors(setupAction =>
             {
