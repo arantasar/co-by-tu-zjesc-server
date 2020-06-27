@@ -10,6 +10,7 @@ namespace Domain
         public Guid Id { get; set; } = Guid.NewGuid();
         [Required]
         public string Name { get; set; }
+        [Required]
         public List<Unit> Units { get; set; } = new List<Unit>();
         public List<Ingredient> Alternatives { get; set; } = new List<Ingredient>();
         [Url]
