@@ -9,7 +9,7 @@ namespace Persistence.Interfaces
     public interface ICategoryRepository
     {
         Task Add(Category category);
-        Task Remove(Guid id);
+        Task<string> Remove(Guid id);
         Task<Category> Get(Guid id);
         Task<IEnumerable<Category>> List();
         Task<bool> Exists(string name);

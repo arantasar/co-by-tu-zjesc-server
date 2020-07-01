@@ -1,4 +1,5 @@
 ﻿using Domain;
+using Elasticsearch.Net;
 using Nest;
 using Persistence.Interfaces;
 using System;
@@ -79,9 +80,10 @@ namespace Persistence
             return new List<Category>(result.Documents);
         }
 
-        public async Task Remove(Guid id)
+        public async Task<string> Remove(Guid id)
         {
-            await Context.DeleteAsync<Category>(id, selector => selector.Index("categories").Refresh(Elasticsearch.Net.Refresh.True));
+            var res = await Context.DeleteAsync<Category>(id, selector => selector.Index("categories").Refresh(Refresh.True));
+            return res.DebugInformation;
         }
     }
 }

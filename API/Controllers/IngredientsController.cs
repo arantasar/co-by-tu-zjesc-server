@@ -63,5 +63,12 @@ namespace API.Controllers
             await IngredientRepository.RemoveUnit(ingredientId, unitId);
             return NoContent();
         }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> RemoveIngredient(Guid id)
+        {
+            await IngredientRepository.Remove(id);
+            return NoContent();
+        }
     }
 }

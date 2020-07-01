@@ -24,11 +24,16 @@ namespace API.Controllers
         [HttpPost("login")]
         public IActionResult Login(UserForLoginDto userForLoginDto)
         {
+            if (userForLoginDto.Email != "janusz.guzowski@gmail.com" || userForLoginDto.Password != "1234")
+            {
+                return Unauthorized();
+            }
+
             var user = new User 
             {
                 DisplayName = "Test User",
                 Email = userForLoginDto.Email,
-                FullName = "Full Name",
+                FullName = "Test User Full Name",
                 Password = userForLoginDto.Password,
                 DateOfBirth = DateTime.Today,
             };
@@ -38,7 +43,7 @@ namespace API.Controllers
                 DisplayName = user.DisplayName,
                 Email = user.Email,
                 FullName = user.FullName,
-                Role = user.Role
+                Role = Role.ADMIN
             };
 
             var token = TokenHelper.CreateToken(user);

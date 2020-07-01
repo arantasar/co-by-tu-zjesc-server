@@ -56,9 +56,11 @@ namespace API.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> RemoveUnit(Guid id)
+        public async Task<IActionResult> RemoveCategory(Guid id)
         {
-            await CategoryRepository.Remove(id);
+            string res = await CategoryRepository.Remove(id);
+            return Ok(res);
+
             return NoContent();
         }
     }

@@ -21,7 +21,10 @@ namespace Persistence
 
         public async Task Add(Ingredient ingredient)
         {
-            await ElasticClient.IndexAsync(ingredient, selector => selector.Index("ingredients"));
+            await ElasticClient.IndexAsync(ingredient, selector => selector
+            .Index("ingredients")
+            .Refresh(Refresh.True)
+            );
         }
 
         public async Task<Ingredient> Get(Guid id)
