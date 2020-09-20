@@ -9,14 +9,20 @@ namespace Domain
     {
         public Guid Id { get; set; } = Guid.NewGuid();
         [Required]
+        [MaxLength(30)]
+        [EmailAddress]
         public string Email { get; set; }
         [Required]
-        public string DisplayName { get; set; }
-        public string FullName { get; set; }
-        public DateTime DateOfBirth { get; set; }
+        [MaxLength(30)]
+        public string Name { get; set; }
         [Required]
+        [MinLength(8)]
         public string Password { get; set; }
-        [Required]
+        public string LastLogin { get; set; } = DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss");
         public Role Role { get; set; } = Role.USER;
+        public List<Recipe> Favourites { get; set; } = new List<Recipe>();
+
+        public List<Recipe> Recipes = new List<Recipe>();
+        public Foto Foto { get; set; }
     }
 }

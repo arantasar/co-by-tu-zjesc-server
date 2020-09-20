@@ -31,18 +31,15 @@ namespace API.Controllers
 
             var user = new User 
             {
-                DisplayName = "Test User",
+                Name = "Test User",
                 Email = userForLoginDto.Email,
-                FullName = "Test User Full Name",
                 Password = userForLoginDto.Password,
-                DateOfBirth = DateTime.Today,
             };
 
             var userForDisplay = new UserForDisplayDto
             {
-                DisplayName = user.DisplayName,
+                Name = user.Name,
                 Email = user.Email,
-                FullName = user.FullName,
                 Role = Role.ADMIN
             };
 

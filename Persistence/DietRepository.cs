@@ -29,26 +29,15 @@ namespace Persistence
 
         public async Task<bool> Exists(string name)
         {
-            var query = await Context.CountAsync<Diet>(s => s
+            var query = await Context.SearchAsync<Diet>(
+                s => s
                 .Index("diets")
                 .Query(q => q
-                    .Match(m => m
-                        .Field(f => f.Name)
-                        .Query(name)
-                        )
-                    )
-                );
+                .Terms(t => t
+                .Field(f => f.Name)
+                .Terms(name))));
 
-            if (!query.IsValid)
-            {
-                throw new Exception(query.DebugInformation);
-            }
-
-            if (query.Count > 0)
-            {
-                return true;
-            }
-            return false;
+            return query.Hits.Count > 0;
         }
 
         public async Task<Diet> Get(Guid id)

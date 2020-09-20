@@ -61,7 +61,7 @@ namespace API.Controllers
             string res = await CategoryRepository.Remove(id);
             return Ok(res);
 
-            return NoContent();
+            // return NoContent();
         }
     }
 }

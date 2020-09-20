@@ -9,11 +9,17 @@ namespace Persistence.Models
     public class UserForDisplayDto
     {
         [Required]
+        [MaxLength(30)]
+        [EmailAddress]
         public string Email { get; set; }
         [Required]
-        public string DisplayName { get; set; }
-        public string FullName { get; set; }
+        public string Name { get; set; }
+        public string LastLogin { get; set; }
         [Required]
         public Role Role { get; set; }
+        public List<Recipe> Favourites { get; set; }
+        public List<Recipe> Recipes { get; set; }
+        public Foto Foto { get; set; }
+
     }
 }
