@@ -45,6 +45,8 @@ namespace API
             services.AddSingleton<IIngredientRepository, IngredientRepository>();
             services.AddSingleton<ICategoryRepository, CategoryRepository>();
             services.AddSingleton<IDietRepository, DietRepository>();
+            services.AddSingleton<IUserRepository, UserRepository>();
+            services.AddSingleton<IRecipeRepository, RecipeRepository>();
             services.AddSingleton(jwtOptions);
             services.AddSingleton(elastic);
             services.AddSingleton<TokenHelper>();

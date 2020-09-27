@@ -22,7 +22,7 @@ namespace API.Controllers
         public IUnitRepository UnitRepository { get; }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<string>>> Index()
+        public async Task<ActionResult<IEnumerable<Unit>>> Index()
         {
             var units = await UnitRepository.List();
             return Ok(units);

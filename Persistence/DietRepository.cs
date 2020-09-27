@@ -34,9 +34,8 @@ namespace Persistence
                 .Index("diets")
                 .Query(q => q
                 .Terms(t => t
-                .Field(f => f.Name)
+                .Field(f => f.Name.Suffix("keyword"))
                 .Terms(name))));
-
             return query.Hits.Count > 0;
         }
 
