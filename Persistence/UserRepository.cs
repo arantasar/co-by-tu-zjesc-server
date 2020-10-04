@@ -62,7 +62,7 @@ namespace Persistence
                                  q => q.Term(
                                      p => p.Email.Suffix("keyword"), email)));
 
-                return user.Documents.First();
+                return user.Documents.FirstOrDefault();
         }
     }
 }

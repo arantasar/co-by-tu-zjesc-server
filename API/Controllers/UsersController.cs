@@ -43,16 +43,20 @@ namespace API.Controllers
 
             var user = new User 
             {
-                Name = "Test User",
-                Email = userForLoginDto.Email,
-                Password = userForLoginDto.Password,
+                Id = userFromRepo.Id,
+                Role = userFromRepo.Role
+
             };
 
             var userForDisplay = new UserForDisplayDto
             {
-                Name = user.Name,
-                Email = user.Email,
-                Role = Role.ADMIN
+                Name = userFromRepo.Name,
+                Email = userFromRepo.Email,
+                Role = userFromRepo.Role,
+                Favourites = userFromRepo.Favourites,
+                Foto = userFromRepo.Foto,
+                LastLogin = userFromRepo.LastLogin,
+                Recipes = userFromRepo.Recipes
             };
 
             var token = TokenHelper.CreateToken(user);
