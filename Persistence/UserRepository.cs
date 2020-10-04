@@ -24,23 +24,14 @@ namespace Persistence
             await Context.IndexAsync(user, selector => selector.Index("users").Refresh(Refresh.True));
         }
 
-        public async Task<bool> Exists(string name)
+        public async Task<bool> Exists(string name, string email)
         {
-            var query = await Context.CountAsync<User>(s => s
-                      .Index("units")
-                      .Query(q => q
-                      .Match(m => m
-                      .Field(f => f.Name)
-                      .Query(name)
-                  )
-              )
-          );
+            var query = await Context.SearchAsync<User>(
+                            s => s.Index("users").Query(
+                                q => q.Term(
+                                    p => p.Name.Suffix("keyword"), name) || q.Term(p => p.Email.Suffix("keyword"), email)));
 
-            if (query.Count > 0)
-            {
-                return true;
-            }
-            return false;
+            return query.Hits.Count > 0;
         }
 
         public async Task<User> Get(Guid id)

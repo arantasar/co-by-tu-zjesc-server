@@ -14,14 +14,14 @@ namespace Persistence
     {
         public IngredientRepository(ElasticClient elasticClient)
         {
-            ElasticClient = elasticClient;
+            Context = elasticClient;
         }
 
-        public ElasticClient ElasticClient { get; }
+        public ElasticClient Context { get; }
 
         public async Task Add(Ingredient ingredient)
         {
-            await ElasticClient.IndexAsync(ingredient, selector => selector
+            await Context.IndexAsync(ingredient, selector => selector
             .Index("ingredients")
             .Refresh(Refresh.True)
             );
@@ -29,32 +29,23 @@ namespace Persistence
 
         public async Task<Ingredient> Get(Guid id)
         {
-            var ingredient = await ElasticClient.GetAsync<Ingredient>(id, selector => selector.Index("ingredients"));
+            var ingredient = await Context.GetAsync<Ingredient>(id, selector => selector.Index("ingredients"));
             return ingredient.Source;
         }
 
         public async Task<bool> Exists(string name)
         {
-            var query = await ElasticClient.CountAsync<Ingredient>(s => s
-                .Index("ingredients")
-                .Query(q => q
-                    .Match(m => m
-                        .Field(f => f.Name)
-                        .Query(name)
-                        )
-                    )
-                );
+            var query = await Context.SearchAsync<Ingredient>(
+                 s => s.Index("ingredients").Query(
+                    q => q.Term(
+                        p => p.Name.Suffix("keyword"), name)));
 
-            if (query.Count > 0)
-            {
-                return true;
-            }
-            return false;
+            return query.Hits.Count > 0;
         }
 
         public async Task<IEnumerable<Ingredient>> List()
         {
-            var result = await ElasticClient.SearchAsync<Ingredient>(item => item
+            var result = await Context.SearchAsync<Ingredient>(item => item
                 .Index("ingredients")
                 .MatchAll()
                 .Sort(ss => ss.Ascending(p => p.Name.Suffix("keyword")))
@@ -64,12 +55,12 @@ namespace Persistence
 
         public async Task Remove(Guid id)
         {
-            await ElasticClient.DeleteAsync<Ingredient>(id, selector => selector.Index("ingredients").Refresh(Refresh.True));
+            await Context.DeleteAsync<Ingredient>(id, selector => selector.Index("ingredients").Refresh(Refresh.True));
         }
 
         public async Task Update(Ingredient ingredient)
         {
-            var result = await ElasticClient.UpdateAsync<Ingredient>(ingredient.Id, selector =>
+            var result = await Context.UpdateAsync<Ingredient>(ingredient.Id, selector =>
                 selector.Index("ingredients").Doc(ingredient).Refresh(Refresh.True));
         }
 

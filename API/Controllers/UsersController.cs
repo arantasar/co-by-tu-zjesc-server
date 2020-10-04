@@ -74,9 +74,9 @@ namespace API.Controllers
         [HttpPost]
         public async Task<ActionResult<User>> Add(UserForCreationDto userForCreationDto)
         {
-            if (await UserRepository.Exists(userForCreationDto.Name))
+            if (await UserRepository.Exists(userForCreationDto.Name, userForCreationDto.Email))
             {
-                return Conflict();
+                return Conflict("Użytkownik o takiej nazwie lub adresie email istnieje już w bazie!");
             }
             var user = new User
             {

@@ -44,7 +44,7 @@ namespace API.Controllers
         {
             if (await IngredientRepository.Exists(ingredientForCreationDto.Name))
             {
-                return Conflict();
+                return Conflict("Składnik o takiej nazwie istnieje już w bazie!");
             }
             var ingredient = new Ingredient
             {

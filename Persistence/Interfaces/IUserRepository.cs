@@ -12,6 +12,6 @@ namespace Persistence.Interfaces
         Task Remove(Guid id);
         Task<User> Get(Guid id);
         Task<IEnumerable<User>> List();
-        Task<bool> Exists(string name);
+        Task<bool> Exists(string name, string email);
     }
 }

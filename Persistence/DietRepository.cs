@@ -30,12 +30,10 @@ namespace Persistence
         public async Task<bool> Exists(string name)
         {
             var query = await Context.SearchAsync<Diet>(
-                s => s
-                .Index("diets")
-                .Query(q => q
-                .Terms(t => t
-                .Field(f => f.Name.Suffix("keyword"))
-                .Terms(name))));
+                 s => s.Index("diets").Query(
+                    q => q.Term(
+                        p => p.Name.Suffix("keyword"), name)));
+
             return query.Hits.Count > 0;
         }
 

@@ -41,21 +41,12 @@ namespace Persistence
 
         public async Task<bool> Exists(string name)
         {
-            var query = await Context.CountAsync<Unit>(s => s
-                .Index("units")
-                .Query(q => q
-                    .Match(m => m
-                        .Field(f => f.Name)
-                        .Query(name)
-                        )
-                    )
-                );
+            var query = await Context.SearchAsync<Unit>(
+                 s => s.Index("units").Query(
+                    q => q.Term(
+                        p => p.Name.Suffix("keyword"), name)));
 
-            if (query.Count > 0)
-            {
-                return true;
-            }
-            return false;
+            return query.Hits.Count > 0;
         }
 
         public async Task<Unit> Get(Guid id)
