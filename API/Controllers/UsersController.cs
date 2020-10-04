@@ -27,11 +27,18 @@ namespace API.Controllers
         public IUserRepository UserRepository { get; }
 
         [HttpPost("login")]
-        public IActionResult Login(UserForLoginDto userForLoginDto)
+        public async Task<IActionResult> Login(UserForLoginDto userForLoginDto)
         {
-            if (userForLoginDto.Email != "janusz.guzowski@gmail.com" || userForLoginDto.Password != "1234")
+            var userFromRepo = await UserRepository.GetByEmail(userForLoginDto.Email);
+
+            if(userFromRepo == null)
             {
-                return Unauthorized();
+                return NotFound(new { message = "Nie ma takiego użytkownika!" });
+            }
+
+            if (userForLoginDto.Password != userFromRepo.Password)
+            {
+                return Unauthorized(new {message = "Błędny login lub hasłow!" });
             }
 
             var user = new User 

@@ -4,6 +4,7 @@ using Nest;
 using Persistence.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -52,6 +53,16 @@ namespace Persistence
         public async Task Remove(Guid id)
         {
             await Context.DeleteAsync<Recipe>(id, selector => selector.Index("units").Refresh(Refresh.True));
+        }
+
+        public async Task<User> GetByEmail(string email)
+        {
+            var user = await Context.SearchAsync<User>(
+                             s => s.Index("users").Query(
+                                 q => q.Term(
+                                     p => p.Email.Suffix("keyword"), email)));
+
+                return user.Documents.First();
         }
     }
 }
