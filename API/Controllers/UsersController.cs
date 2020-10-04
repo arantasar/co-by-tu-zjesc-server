@@ -38,14 +38,13 @@ namespace API.Controllers
 
             if (userForLoginDto.Password != userFromRepo.Password)
             {
-                return Unauthorized(new {message = "Błędny login lub hasłow!" });
+                return Unauthorized(new {message = "Błędny login lub hasło!" });
             }
 
             var user = new User 
             {
                 Id = userFromRepo.Id,
                 Role = userFromRepo.Role
-
             };
 
             var userForDisplay = new UserForDisplayDto
