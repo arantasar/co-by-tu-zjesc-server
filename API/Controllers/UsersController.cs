@@ -76,7 +76,7 @@ namespace API.Controllers
         {
             if (await UserRepository.Exists(userForCreationDto.Name, userForCreationDto.Email))
             {
-                return Conflict("Użytkownik o takiej nazwie lub adresie email istnieje już w bazie!");
+                return Conflict(new {message = "Użytkownik o takiej nazwie lub adresie email istnieje już w bazie!" });
             }
             var user = new User
             {
