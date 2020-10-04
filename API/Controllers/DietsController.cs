@@ -43,7 +43,7 @@ namespace API.Controllers
         {
             if (await DietRepository.Exists(dietForCreationDto.Name))
             {
-                return Conflict("Dieta o takiej nazwie istnieje już w bazie!");
+                return Conflict(new {message = "Dieta o takiej nazwie istnieje już w bazie!"});
             }
             var diet = new Diet
             {

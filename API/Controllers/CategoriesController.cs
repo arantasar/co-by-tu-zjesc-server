@@ -44,7 +44,7 @@ namespace API.Controllers
         {
             if (await CategoryRepository.Exists(categoryForCreationDto.Name))
             {
-                return Conflict("Kategoria o takiej nazwie istnieje już w bazie!");
+                return Conflict(new {message = "Kategoria o takiej nazwie istnieje już w bazie!"});
             }
             var category = new Category
             {

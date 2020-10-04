@@ -44,7 +44,7 @@ namespace API.Controllers
         {
             if (await UnitRepository.Exists(unitForCreationDto.Name))
             {
-                return Conflict("Jednostka o takiej nazwie istnieje już w bazie!");
+                return Conflict(new {message = "Jednostka o takiej nazwie istnieje już w bazie!" });
             }
             var unit = new Unit { Name = unitForCreationDto.Name };
             await UnitRepository.Add(unit);

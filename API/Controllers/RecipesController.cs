@@ -43,7 +43,7 @@ namespace API.Controllers
         {
             if (await recipeRepository.Exists(recipeForCreationDto.Name))
             {
-                return Conflict("Przepis o takiej nazwie istnieje już w bazie!");
+                return Conflict(new {message = "Przepis o takiej nazwie istnieje już w bazie!" });
             }
             var recipe = new Recipe
             {
