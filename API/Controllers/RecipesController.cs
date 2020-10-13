@@ -1,10 +1,12 @@
 ﻿using Domain;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Persistence.Interfaces;
 using Persistence.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace API.Controllers
@@ -39,14 +41,19 @@ namespace API.Controllers
         }
 
         [HttpPost]
+        [Authorize(AuthenticationSchemes = "Bearer")]
         public async Task<ActionResult<Recipe>> Add(RecipeForCreationDto recipeForCreationDto)
         {
             if (await recipeRepository.Exists(recipeForCreationDto.Name))
             {
                 return Conflict(new {message = "Przepis o takiej nazwie istnieje już w bazie!" });
             }
+
+            var id = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+
             var recipe = new Recipe
             {
+                UserId = Guid.Parse(id),
                 Name = recipeForCreationDto.Name,
                 Categories = recipeForCreationDto.Categories,
                 Description = recipeForCreationDto.Description,
