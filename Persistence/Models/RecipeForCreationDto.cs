@@ -18,5 +18,6 @@ namespace Persistence.Models
         public List<RecipeLine> RecipeLines { get; set; } = new List<RecipeLine>();
         [Required]
         public List<Category> Categories { get; set; } = new List<Category>();
+        public List<Diet> Diets { get; set; } = new List<Diet>();
     }
 }

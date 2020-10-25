@@ -57,7 +57,8 @@ namespace API.Controllers
                 Name = recipeForCreationDto.Name,
                 Categories = recipeForCreationDto.Categories,
                 Description = recipeForCreationDto.Description,
-                RecipeLines = recipeForCreationDto.RecipeLines
+                RecipeLines = recipeForCreationDto.RecipeLines,
+                Diets = recipeForCreationDto.Diets
             };
             await recipeRepository.Add(recipe);
             return CreatedAtAction("Get", new { id = recipe.Id }, recipe);
