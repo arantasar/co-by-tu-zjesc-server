@@ -15,7 +15,7 @@ namespace Persistence.Models
         [Required]
         [MaxLength(3000)]
         public string Description { get; set; }
-        public List<RecipeLine> RecipeLines = new List<RecipeLine>();
+        public List<RecipeLine> RecipeLines { get; set; } = new List<RecipeLine>();
         [Required]
         public List<Category> Categories { get; set; } = new List<Category>();
     }
