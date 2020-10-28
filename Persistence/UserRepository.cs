@@ -20,6 +20,14 @@ namespace Persistence
 
         public ElasticClient Context { get; }
 
+        public async Task UpdateLoginDate(User updatedUser)
+        {
+            updatedUser.LastLogin = DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss");
+
+            await Context.UpdateAsync<User>(updatedUser.Id, 
+                selector => selector.Index("users").Doc(updatedUser));
+        }
+
         public async Task Add(User user)
         {
             await Context.IndexAsync(user, selector => selector.Index("users").Refresh(Refresh.True));

@@ -19,10 +19,12 @@ namespace Domain
         [MinLength(8)]
         public string Password { get; set; }
         public string LastLogin { get; set; } = DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss");
+        public string DateCreated { get; set; } = DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss");
         public Role Role { get; set; } = Role.USER;
         public List<Recipe> Favourites { get; set; } = new List<Recipe>();
 
         public List<Recipe> Recipes = new List<Recipe>();
         public Foto Foto { get; set; }
+        public int ReceivedLikes { get; set; }
     }
 }
