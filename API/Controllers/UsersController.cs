@@ -60,6 +60,8 @@ namespace API.Controllers
 
             var token = TokenHelper.CreateToken(user);
 
+            await UserRepository.UpdateLoginDate(userFromRepo);
+
             return Ok(new { User = userForDisplay, Token = token });
         }
 

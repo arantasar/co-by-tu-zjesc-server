@@ -14,5 +14,6 @@ namespace Persistence.Interfaces
         Task<IEnumerable<User>> List();
         Task<bool> Exists(string name, string email);
         Task<User> GetByEmail(string email);
+        Task UpdateLoginDate(User updatedUser);
     }
 }
