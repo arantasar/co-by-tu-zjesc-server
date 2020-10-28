@@ -1,4 +1,5 @@
 ﻿using Domain;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -18,5 +19,6 @@ namespace Persistence.Models
         [Required]
         [MinLength(8)]
         public string Password { get; set; }
+        public IFormFile Photo { get; set; }
     }
 }

@@ -23,6 +23,6 @@ namespace Domain
         public List<Recipe> Favourites { get; set; } = new List<Recipe>();
 
         public List<Recipe> Recipes = new List<Recipe>();
-        public Foto Foto { get; set; }
+        public string PhotoPath { get; set; }
     }
 }
