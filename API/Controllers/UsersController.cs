@@ -89,7 +89,7 @@ namespace API.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<User>> Add(UserForCreationDto userForCreationDto)
+        public async Task<ActionResult<User>> Add([FromForm]UserForCreationDto userForCreationDto)
         {
             if (await UserRepository.Exists(userForCreationDto.Name, userForCreationDto.Email))
             {
@@ -103,6 +103,8 @@ namespace API.Controllers
                 uniqueFileName = Guid.NewGuid().ToString() + "_" + userForCreationDto.Photo.FileName;
                 string filePath = Path.Combine(uploadsFolder, uniqueFileName);
                 userForCreationDto.Photo.CopyTo(new FileStream(filePath, FileMode.Create));
+                var prefix = HttpContext.Request.IsHttps ? "https://" : "http://";
+                uniqueFileName = prefix  + HttpContext.Request.Host.Value.ToString() + "/Photos/UserPhotos/" + uniqueFileName;
             }
 
             var user = new User
