@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using API.Services;
 using Domain;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Persistence.Interfaces;
@@ -15,16 +17,19 @@ namespace API.Controllers
     [ApiController]
     public class UsersController : ControllerBase
     {
-        public UsersController(TokenHelper tokenHelper, IRecipeRepository recipeRepository, IUserRepository userRepository)
+        public UsersController(TokenHelper tokenHelper, IRecipeRepository recipeRepository, IUserRepository userRepository,
+            IWebHostEnvironment webHostEnvironment)
         {
             TokenHelper = tokenHelper;
             RecipeRepository = recipeRepository;
             UserRepository = userRepository;
+            WebHostEnvironment = webHostEnvironment;
         }
 
         public TokenHelper TokenHelper { get; }
         public IRecipeRepository RecipeRepository { get; }
         public IUserRepository UserRepository { get; }
+        public IWebHostEnvironment WebHostEnvironment { get; }
 
         [HttpPost("login")]
         public async Task<IActionResult> Login(UserForLoginDto userForLoginDto)
@@ -53,7 +58,7 @@ namespace API.Controllers
                 Email = userFromRepo.Email,
                 Role = userFromRepo.Role,
                 Favourites = userFromRepo.Favourites,
-                Foto = userFromRepo.Foto,
+                PhotoPath = userFromRepo.PhotoPath,
                 LastLogin = userFromRepo.LastLogin,
                 Recipes = userFromRepo.Recipes
             };
@@ -90,11 +95,22 @@ namespace API.Controllers
             {
                 return Conflict(new {message = "Użytkownik o takiej nazwie lub adresie email istnieje już w bazie!" });
             }
+
+            string uniqueFileName = null;
+            if(userForCreationDto.Photo != null)
+            {
+                string uploadsFolder = Path.Combine(WebHostEnvironment.WebRootPath, "Photos", "UserPhotos");
+                uniqueFileName = Guid.NewGuid().ToString() + "_" + userForCreationDto.Photo.FileName;
+                string filePath = Path.Combine(uploadsFolder, uniqueFileName);
+                userForCreationDto.Photo.CopyTo(new FileStream(filePath, FileMode.Create));
+            }
+
             var user = new User
             {
                 Name = userForCreationDto.Name,
                 Email = userForCreationDto.Email,
-                Password = userForCreationDto.Password,        
+                Password = userForCreationDto.Password,
+                PhotoPath = uniqueFileName
             };
             await UserRepository.Add(user);
             return CreatedAtAction("Get", new { id = user.Id }, user);
