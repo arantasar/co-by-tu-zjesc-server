@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using API.Helpers;
 using API.Services;
 using Domain;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Persistence.Interfaces;
 using Persistence.Models;
@@ -18,18 +17,19 @@ namespace API.Controllers
     public class UsersController : ControllerBase
     {
         public UsersController(TokenHelper tokenHelper, IRecipeRepository recipeRepository, IUserRepository userRepository,
-            IWebHostEnvironment webHostEnvironment)
+            PhotoHelper photoHelper)
         {
             TokenHelper = tokenHelper;
             RecipeRepository = recipeRepository;
             UserRepository = userRepository;
-            WebHostEnvironment = webHostEnvironment;
+            PhotoHelper = photoHelper;
         }
 
         public TokenHelper TokenHelper { get; }
         public IRecipeRepository RecipeRepository { get; }
         public IUserRepository UserRepository { get; }
         public IWebHostEnvironment WebHostEnvironment { get; }
+        public PhotoHelper PhotoHelper { get; }
 
         [HttpPost("login")]
         public async Task<IActionResult> Login(UserForLoginDto userForLoginDto)
@@ -99,12 +99,7 @@ namespace API.Controllers
             string uniqueFileName = null;
             if(userForCreationDto.Photo != null)
             {
-                string uploadsFolder = Path.Combine(WebHostEnvironment.WebRootPath, "Photos", "UserPhotos");
-                uniqueFileName = Guid.NewGuid().ToString() + "_" + userForCreationDto.Photo.FileName;
-                string filePath = Path.Combine(uploadsFolder, uniqueFileName);
-                userForCreationDto.Photo.CopyTo(new FileStream(filePath, FileMode.Create));
-                var prefix = HttpContext.Request.IsHttps ? "https://" : "http://";
-                uniqueFileName = prefix  + HttpContext.Request.Host.Value.ToString() + "/Photos/UserPhotos/" + uniqueFileName;
+                uniqueFileName = PhotoHelper.AddPhoto(userForCreationDto, "Photos", "UserPhotos");
             }
 
             var user = new User

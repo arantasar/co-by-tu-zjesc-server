@@ -1,5 +1,4 @@
 ﻿using Domain;
-using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -7,7 +6,7 @@ using System.Text;
 
 namespace Persistence.Models
 {
-    public class UserForCreationDto
+    public class UserForCreationDto : PhotoBaseClass
     {
         [Required]
         [MaxLength(30)]
@@ -19,6 +18,5 @@ namespace Persistence.Models
         [Required]
         [MinLength(8)]
         public string Password { get; set; }
-        public IFormFile Photo { get; set; }
     }
 }
