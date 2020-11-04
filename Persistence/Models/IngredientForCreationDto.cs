@@ -10,7 +10,7 @@ namespace API.Models
     {
         [Required]
         public string Name { get; set; }
-        public List<Unit> Units { get; set; } = new List<Unit>();
-        public List<Ingredient> Alternatives { get; set; } = new List<Ingredient>();
+        public string Units { get; set; }
+        public string Alternatives { get; set; }
     }
 }

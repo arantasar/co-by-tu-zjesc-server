@@ -19,14 +19,14 @@ namespace API.Helpers
 
         public IWebHostEnvironment WebHostEnvironment { get; }
 
-        public string AddPhoto(PhotoBaseClass photoBaseClass, string directoryNameLev1, string directoryNameLev2 = null)
+        public string AddPhoto(PhotoBaseClass photoBaseClass, HttpContext httpContext, string directoryNameLev1, string directoryNameLev2 = null)
         {
             string uploadsFolder = Path.Combine(WebHostEnvironment.WebRootPath, directoryNameLev1, directoryNameLev2);
             string uniqueFileName = Guid.NewGuid().ToString() + "_" + photoBaseClass.Photo.FileName;
             string filePath = Path.Combine(uploadsFolder, uniqueFileName);
             photoBaseClass.Photo.CopyTo(new FileStream(filePath, FileMode.Create));
-            var prefix = HttpContext.Request.IsHttps ? "https://" : "http://";
-            uniqueFileName = prefix + HttpContext.Request.Host.Value.ToString() + "/" + directoryNameLev1 + "/" + directoryNameLev2 + "/" + uniqueFileName;
+            var prefix = httpContext.Request.IsHttps ? "https://" : "http://";
+            uniqueFileName = prefix + httpContext.Request.Host.Value.ToString() + "/" + directoryNameLev1 + "/" + directoryNameLev2 + "/" + uniqueFileName;
 
             return uniqueFileName;
         }
