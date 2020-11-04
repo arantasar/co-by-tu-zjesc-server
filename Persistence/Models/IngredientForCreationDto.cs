@@ -1,16 +1,16 @@
 ﻿using Domain;
 using Microsoft.AspNetCore.Http;
+using Persistence.Models;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace API.Models
 {
-    public class IngredientForCreationDto
+    public class IngredientForCreationDto : PhotoBaseClass
     {
         [Required]
         public string Name { get; set; }
         public List<Unit> Units { get; set; } = new List<Unit>();
         public List<Ingredient> Alternatives { get; set; } = new List<Ingredient>();
-        public IFormFile Photo { get; set; }
     }
 }

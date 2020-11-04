@@ -25,8 +25,9 @@ namespace Domain
         [Required]
         public List<Category> Categories { get; set; } = new List<Category>();
         public List<Diet> Diets { get; set; } = new List<Diet>();
-        public List<string> PhotosPath { get; set; } = new List<string>();
-
+        // to do
+        //public List<string> PhotosPath { get; set; } = new List<string>();
+        public string PhotoPath { get; set; }
         [ForeignKey("UserId")]
         public User User { get; set; }
 

@@ -7,7 +7,7 @@ using System.Text;
 
 namespace Persistence.Models
 {
-    public class RecipeForCreationDto
+    public class RecipeForCreationDto : PhotoBaseClass
     {
         [Required]
         [MaxLength(60)]

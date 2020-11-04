@@ -16,6 +16,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="wwwroot\Photos\IngredientPhotos\" />
+    <Folder Include="wwwroot\Photos\RecipePhotos\" />
     <Folder Include="wwwroot\Photos\UserPhotos\" />
   </ItemGroup>
 

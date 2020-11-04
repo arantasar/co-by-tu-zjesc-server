@@ -1,4 +1,5 @@
-﻿using Domain;
+﻿using API.Helpers;
+using Domain;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Persistence.Interfaces;
@@ -17,9 +18,12 @@ namespace API.Controllers
     {
         private readonly IRecipeRepository recipeRepository;
 
-        public RecipesController(IRecipeRepository recipeRepository)
+        public PhotoHelper PhotoHelper { get; }
+
+        public RecipesController(IRecipeRepository recipeRepository, PhotoHelper photoHelper)
         {
             this.recipeRepository = recipeRepository;
+            PhotoHelper = photoHelper;
         }
 
         [HttpGet]
@@ -51,6 +55,12 @@ namespace API.Controllers
 
             var id = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
 
+            string uniqueFileName = null;
+            if (recipeForCreationDto.Photo != null)
+            {
+                uniqueFileName = PhotoHelper.AddPhoto(recipeForCreationDto, "Photos", "RecipePhotos");
+            }
+
             var recipe = new Recipe
             {
                 UserId = Guid.Parse(id),
@@ -58,7 +68,8 @@ namespace API.Controllers
                 Categories = recipeForCreationDto.Categories,
                 Description = recipeForCreationDto.Description,
                 RecipeLines = recipeForCreationDto.RecipeLines,
-                Diets = recipeForCreationDto.Diets
+                Diets = recipeForCreationDto.Diets,
+                PhotoPath = uniqueFileName
             };
             await recipeRepository.Add(recipe);
             return CreatedAtAction("Get", new { id = recipe.Id }, recipe);

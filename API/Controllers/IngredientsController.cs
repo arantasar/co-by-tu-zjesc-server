@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using API.Helpers;
 using API.Models;
 using Domain;
 using MediatR;
@@ -14,12 +15,14 @@ namespace API.Controllers
     [ApiController]
     public class IngredientsController : ControllerBase
     {
-        public IngredientsController(IIngredientRepository ingredientRepository)
+        public IngredientsController(IIngredientRepository ingredientRepository, PhotoHelper photoHelper)
         {
             IngredientRepository = ingredientRepository;
+            PhotoHelper = photoHelper;
         }
 
         public IIngredientRepository IngredientRepository { get; }
+        public PhotoHelper PhotoHelper { get; }
 
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Ingredient>>> Index()
@@ -46,11 +49,19 @@ namespace API.Controllers
             {
                 return Conflict(new {message = "Składnik o takiej nazwie istnieje już w bazie!" });
             }
+
+            string uniqueFileName = null;
+            if (ingredientForCreationDto.Photo != null)
+            {
+                uniqueFileName = PhotoHelper.AddPhoto(ingredientForCreationDto, "Photos", "IngredientPhotos");
+            }
+
             var ingredient = new Ingredient
             {
                 Name = ingredientForCreationDto.Name,
                 Alternatives = ingredientForCreationDto.Alternatives,
-                Units = ingredientForCreationDto.Units
+                Units = ingredientForCreationDto.Units,
+                PhotoPath = uniqueFileName
             };
 
             await IngredientRepository.Add(ingredient);
