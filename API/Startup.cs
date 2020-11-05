@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
+using API.Helpers;
 using API.Options;
 using API.Services;
 using MediatR;
@@ -50,6 +51,7 @@ namespace API
             services.AddSingleton(jwtOptions);
             services.AddSingleton(elastic);
             services.AddSingleton<TokenHelper>();
+            services.AddSingleton<PhotoHelper>();
             services.AddCors(setupAction =>
             {
                 setupAction.AddPolicy("cors", policy =>

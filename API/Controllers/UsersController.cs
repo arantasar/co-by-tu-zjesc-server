@@ -99,7 +99,7 @@ namespace API.Controllers
             string uniqueFileName = null;
             if(userForCreationDto.Photo != null)
             {
-                uniqueFileName = PhotoHelper.AddPhoto(userForCreationDto.Photo, "Photos", "UserPhotos");
+                uniqueFileName = PhotoHelper.AddPhoto(userForCreationDto.Photo, HttpContext, "Photos", "UserPhotos");
             }
 
             var user = new User

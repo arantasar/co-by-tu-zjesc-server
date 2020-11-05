@@ -58,7 +58,7 @@ namespace API.Controllers
             string uniqueFileName = null;
             if (recipeForCreationDto.Photo != null)
             {
-                uniqueFileName = PhotoHelper.AddPhoto(recipeForCreationDto.Photo, "Photos", "RecipePhotos");
+                uniqueFileName = PhotoHelper.AddPhoto(recipeForCreationDto.Photo,HttpContext ,"Photos", "RecipePhotos");
             }
 
             var recipe = new Recipe

@@ -7,7 +7,7 @@ using System.IO;
 
 namespace API.Helpers
 {
-    public class PhotoHelper : ControllerBase
+    public class PhotoHelper
     {
         public PhotoHelper(IWebHostEnvironment webHostEnvironment)
         {
@@ -16,16 +16,16 @@ namespace API.Helpers
 
         public IWebHostEnvironment WebHostEnvironment { get; }
 
-        public string AddPhoto(IFormFile photo, string directoryNameLev1, string directoryNameLev2 = null)
+        public string AddPhoto(IFormFile photo, HttpContext httpContext, string directoryNameLev1, string directoryNameLev2 = null)
         {
             string uploadsFolder = Path.Combine(WebHostEnvironment.WebRootPath, directoryNameLev1, directoryNameLev2);
             string uniqueFileName = Guid.NewGuid().ToString() + "_" + photo.FileName;
             string filePath = Path.Combine(uploadsFolder, uniqueFileName);
-            string prefix = HttpContext.Request.IsHttps ? "https://" : "http://";
+            string prefix = httpContext.Request.IsHttps ? "https://" : "http://";
 
             photo.CopyTo(new FileStream(filePath, FileMode.Create));
             
-            uniqueFileName = prefix + HttpContext.Request.Host.Value.ToString() + "/" + directoryNameLev1 + "/" + directoryNameLev2 + "/" + uniqueFileName;
+            uniqueFileName = prefix + httpContext.Request.Host.Value.ToString() + "/" + directoryNameLev1 + "/" + directoryNameLev2 + "/" + uniqueFileName;
 
             return uniqueFileName;
         }
