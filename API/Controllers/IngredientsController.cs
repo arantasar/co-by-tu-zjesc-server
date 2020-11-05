@@ -53,7 +53,7 @@ namespace API.Controllers
             string uniqueFileName = null;
             if (ingredientForCreationDto.Photo != null)
             {
-                uniqueFileName = PhotoHelper.AddPhoto(ingredientForCreationDto, "Photos", "IngredientPhotos");
+                uniqueFileName = PhotoHelper.AddPhoto(ingredientForCreationDto.Photo, "Photos", "IngredientPhotos");
             }
 
             var ingredient = new Ingredient

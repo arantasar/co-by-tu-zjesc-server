@@ -1,4 +1,5 @@
 ﻿using Domain;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -7,7 +8,7 @@ using System.Text;
 
 namespace Persistence.Models
 {
-    public class RecipeForCreationDto : PhotoBaseClass
+    public class RecipeForCreationDto
     {
         [Required]
         [MaxLength(60)]
@@ -19,5 +20,6 @@ namespace Persistence.Models
         [Required]
         public List<Category> Categories { get; set; } = new List<Category>();
         public List<Diet> Diets { get; set; } = new List<Diet>();
+        public IFormFile Photo { get; set; }
     }
 }
