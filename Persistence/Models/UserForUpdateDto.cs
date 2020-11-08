@@ -7,8 +7,10 @@ using System.Text;
 
 namespace Persistence.Models
 {
-    public class UserForCreationDto
+    public class UserForUpdateDto
     {
+        [Required]
+        public Guid Id { get; set; }
         [Required]
         [MaxLength(30)]
         [EmailAddress]
@@ -19,5 +21,7 @@ namespace Persistence.Models
         [Required]
         [MinLength(8)]
         public string Password { get; set; }
+        public IFormFile Photo { get; set; }
+        public string Description { get; set; }
     }
 }

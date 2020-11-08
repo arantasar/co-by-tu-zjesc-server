@@ -43,6 +43,16 @@ namespace Persistence
             return query.Hits.Count > 0;
         }
 
+        public async Task<bool> Exists(Guid id)
+        {
+            var query = await Context.SearchAsync<User>(
+                            s => s.Index("users").Query(
+                                q => q.Term(
+                                    p => p.Id.Suffix("keyword"), id)));
+
+            return query.Hits.Count > 0;
+        }
+
         public async Task<User> Get(Guid id)
         {
             var result = await Context.GetAsync<User>(id, selector => selector.Index("users"));

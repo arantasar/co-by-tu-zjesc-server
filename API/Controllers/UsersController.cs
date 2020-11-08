@@ -89,17 +89,11 @@ namespace API.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<User>> Add([FromForm]UserForCreationDto userForCreationDto)
+        public async Task<ActionResult<User>> Add(UserForCreationDto userForCreationDto)
         {
             if (await UserRepository.Exists(userForCreationDto.Name, userForCreationDto.Email))
             {
                 return Conflict(new {message = "Użytkownik o takiej nazwie lub adresie email istnieje już w bazie!" });
-            }
-
-            string uniqueFileName = null;
-            if(userForCreationDto.Photo != null)
-            {
-                uniqueFileName = PhotoHelper.AddPhoto(userForCreationDto.Photo, HttpContext, "Photos", "UserPhotos");
             }
 
             var user = new User
@@ -107,10 +101,34 @@ namespace API.Controllers
                 Name = userForCreationDto.Name,
                 Email = userForCreationDto.Email,
                 Password = userForCreationDto.Password,
-                PhotoPath = uniqueFileName
             };
             await UserRepository.Add(user);
             return CreatedAtAction("Get", new { id = user.Id }, user);
         }
+
+        [HttpPost]
+        public async Task<ActionResult<User>> Update(UserForUpdateDto userForUpdateDto)
+        {
+            if (await UserRepository.Exists(userForUpdateDto.Id) == false)
+            {
+                return NotFound(new { message = "Brak użytkownika w bazie!" });
+            }
+
+            var userForUpdate = await UserRepository.Get(userForUpdateDto.Id);
+
+            string uniqueFileName = null;
+            if (userForUpdateDto.Photo != null)
+            {
+                uniqueFileName = PhotoHelper.AddPhoto(userForUpdateDto.Photo, HttpContext, "Photos", "UserPhotos");
+            }
+
+            userForUpdate.Email = userForUpdateDto.Email;
+            userForUpdate.PhotoPath = uniqueFileName;
+            userForUpdate.Description = userForUpdateDto.Description;
+
+            await UserRepository.Add(userForUpdate);
+            return CreatedAtAction("Get", new { id = userForUpdate.Id }, userForUpdate);
+        }
+
     }
 }

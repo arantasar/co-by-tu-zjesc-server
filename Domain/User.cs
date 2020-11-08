@@ -22,9 +22,9 @@ namespace Domain
         public string DateCreated { get; set; } = DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss");
         public Role Role { get; set; } = Role.USER;
         public List<Recipe> Favourites { get; set; } = new List<Recipe>();
-
-        public List<Recipe> Recipes = new List<Recipe>();
+        public List<Recipe> Recipes { get; set; } = new List<Recipe>();
         public string PhotoPath { get; set; }
         public int ReceivedLikes { get; set; }
+        public string Description { get; set; }
     }
 }
