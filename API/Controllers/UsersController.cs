@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using API.Helpers;
 using API.Services;
 using Domain;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Persistence.Interfaces;
@@ -60,7 +62,8 @@ namespace API.Controllers
                 Favourites = userFromRepo.Favourites,
                 PhotoPath = userFromRepo.PhotoPath,
                 LastLogin = userFromRepo.LastLogin,
-                Recipes = userFromRepo.Recipes
+                Recipes = userFromRepo.Recipes,
+                Description = userFromRepo.Description
             };
 
             var token = TokenHelper.CreateToken(user);
@@ -107,23 +110,22 @@ namespace API.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<User>> Update(UserForUpdateDto userForUpdateDto)
+        [Route("update")]
+        [Authorize(AuthenticationSchemes = "Bearer")]
+        public async Task<ActionResult<User>> Update([FromForm]UserForUpdateDto userForUpdateDto)
         {
-            if (await UserRepository.Exists(userForUpdateDto.Id) == false)
-            {
-                return NotFound(new { message = "Brak użytkownika w bazie!" });
-            }
+            var id = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            var userForUpdate = await UserRepository.Get(Guid.Parse(id));
 
-            var userForUpdate = await UserRepository.Get(userForUpdateDto.Id);
+            string uniqueFileName = userForUpdate.PhotoPath;
 
-            string uniqueFileName = null;
             if (userForUpdateDto.Photo != null)
             {
-                uniqueFileName = PhotoHelper.AddPhoto(userForUpdateDto.Photo, HttpContext, "Photos", "UserPhotos");
+                uniqueFileName = PhotoHelper.AddPhoto(userForUpdateDto.Photo, HttpContext, "Photos", "UserPhotos");  
             }
 
-            userForUpdate.Email = userForUpdateDto.Email;
             userForUpdate.PhotoPath = uniqueFileName;
+            userForUpdate.Email = userForUpdateDto.Email; 
             userForUpdate.Description = userForUpdateDto.Description;
 
             await UserRepository.Add(userForUpdate);

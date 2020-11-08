@@ -22,6 +22,7 @@ namespace Persistence.Models
         public string PhotoPath { get; set; }
         public int DaysInService { get; set; }
         public int ReceivedLikes { get; set; }
+        public string Description { get; set; }
 
     }
 }
