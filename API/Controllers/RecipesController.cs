@@ -83,19 +83,26 @@ namespace API.Controllers
         }
 
         [HttpPost]
-        [Route("update")]
+        [Route("update/{recipeId}")]
         [Authorize(AuthenticationSchemes = "Bearer")]
-        public async Task<ActionResult<User>> Update([FromForm] RecipeForUpdateDto recipeForUpdateDto)
-        {
-            if (await recipeRepository.Exists(recipeForUpdateDto.Id) == false)
+        public async Task<ActionResult<User>> Update([FromForm] RecipeForUpdateDto recipeForUpdateDto, [FromRoute]Guid recipeId )
+        {      
+            if (recipeId == null)
+            {
+                return NotFound(new { message = "Nie podano przepisu!" });
+            }
+
+            if (await recipeRepository.Exists(recipeId) == false)
             {
                 return NotFound(new { message = "Brak przepisu w bazie!" });
             }
 
+            recipeForUpdateDto.Id = recipeId;
+
             //var id = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
             //var recipeForUpdate = await recipeRepository.Get(Guid.Parse(id));
 
-            var recipeForUpdate = await recipeRepository.Get(Guid.Parse(id));
+            var recipeForUpdate = await recipeRepository.Get(recipeId);
 
             string uniqueFileName = recipeForUpdate.PhotoPath;
 

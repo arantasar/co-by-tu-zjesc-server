@@ -15,7 +15,7 @@ namespace Domain
         [Required]
         [MaxLength(3000)]
         public string Description { get; set; }
-        public List<RecipeLine> RecipeLines = new List<RecipeLine>();
+        public List<RecipeLine> RecipeLines { get; set; } = new List<RecipeLine>();
 
         public string DateAdded { get; set; } = DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss");
 
