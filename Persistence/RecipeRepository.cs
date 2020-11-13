@@ -34,6 +34,16 @@ namespace Persistence
             return query.Hits.Count > 0;
         }
 
+        public async Task<bool> Exists(Guid id)
+        {
+            var query = await Context.SearchAsync<Recipe>(
+                 s => s.Index("recipes").Query(
+                    q => q.Term(
+                        p => p.Name.Suffix("keyword"), id)));
+
+            return query.Hits.Count > 0;
+        }
+
         public async Task<Recipe> Get(Guid id)
         {
             var result = await Context.GetAsync<Recipe>(id, selector => selector.Index("recipes"));

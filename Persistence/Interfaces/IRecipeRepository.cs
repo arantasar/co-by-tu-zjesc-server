@@ -14,5 +14,6 @@ namespace Persistence.Interfaces
         Task<Recipe> Get(Guid id);
         Task<IEnumerable<Recipe>> List();
         Task<bool> Exists(string name);
+        Task<bool> Exists(Guid id);
     }
 }

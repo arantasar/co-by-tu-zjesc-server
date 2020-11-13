@@ -81,5 +81,38 @@ namespace API.Controllers
             await recipeRepository.Remove(id);
             return NoContent();
         }
+
+        [HttpPost]
+        [Route("update")]
+        [Authorize(AuthenticationSchemes = "Bearer")]
+        public async Task<ActionResult<User>> Update([FromForm] RecipeForUpdateDto recipeForUpdateDto)
+        {
+            if (await recipeRepository.Exists(recipeForUpdateDto.Id) == false)
+            {
+                return NotFound(new { message = "Brak przepisu w bazie!" });
+            }
+
+            //var id = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            //var recipeForUpdate = await recipeRepository.Get(Guid.Parse(id));
+
+            var recipeForUpdate = await recipeRepository.Get(Guid.Parse(id));
+
+            string uniqueFileName = recipeForUpdate.PhotoPath;
+
+            if (recipeForUpdateDto.Photo != null)
+            {
+                uniqueFileName = PhotoHelper.AddPhoto(recipeForUpdateDto.Photo, HttpContext, "Photos", "RecipePhotos");
+            }
+
+            recipeForUpdate.PhotoPath = uniqueFileName;
+            recipeForUpdate.Name = recipeForUpdateDto.Name;
+            recipeForUpdate.Description = recipeForUpdateDto.Description;
+            recipeForUpdate.RecipeLines = recipeForUpdateDto.RecipeLines;
+            recipeForUpdate.Categories = recipeForUpdateDto.Categories;
+            recipeForUpdate.Diets = recipeForUpdateDto.Diets;
+
+            await recipeRepository.Add(recipeForUpdate);
+            return CreatedAtAction("Get", new { id = recipeForUpdate.Id }, recipeForUpdate);
+        }
     }
 }
