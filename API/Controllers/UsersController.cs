@@ -74,21 +74,55 @@ namespace API.Controllers
         }
 
         [HttpGet("{id:guid}/recipes")]
-        public async Task<ActionResult<IEnumerable<Recipe>>> Recipes()
+        public async Task<ActionResult<IEnumerable<RecipeForDisplayDto>>> Recipes()
         {
             var recipes = await RecipeRepository.List();
-            return Ok(recipes);
+            var recipesForDisplay = new List<RecipeForDisplayDto>();
+
+            foreach (var recipe in recipes)
+            {
+                var recipeForDisplay = new RecipeForDisplayDto
+                {
+                    Name = recipe.Name,
+                    Description = recipe.Description,
+                    RecipeLines = recipe.RecipeLines,
+                    DateAdded = recipe.DateAdded,
+                    ViewCounter = recipe.ViewCounter,
+                    InFavourite = recipe.InFavourite,
+                    Likes = recipe.Likes,
+                    Categories = recipe.Categories,
+                    Diets = recipe.Diets,
+                    PhotoPath = recipe.PhotoPath,
+                    User = recipe.User,
+                    UserId = recipe.UserId
+                };
+                recipesForDisplay.Add(recipeForDisplay);
+            }
+            return Ok(recipesForDisplay);
         }
 
         [HttpGet("{id:guid}"), ActionName("Get")]
-        public async Task<ActionResult<Recipe>> Get(Guid id)
+        public async Task<ActionResult<UserForDisplayDto>> Get(Guid id)
         {
-            var user = await UserRepository.Get(id);
-            if (user == null)
+            var userFromRepo = await UserRepository.Get(id);
+            if (userFromRepo == null)
             {
                 return NotFound();
             }
-            return Ok(user);
+
+            var userForDisplay = new UserForDisplayDto
+            {
+                Name = userFromRepo.Name,
+                Email = userFromRepo.Email,
+                Role = userFromRepo.Role,
+                Favourites = userFromRepo.Favourites,
+                PhotoPath = userFromRepo.PhotoPath,
+                LastLogin = userFromRepo.LastLogin,
+                Recipes = userFromRepo.Recipes,
+                Description = userFromRepo.Description
+            };
+
+            return Ok(userForDisplay);
         }
 
         [HttpPost]

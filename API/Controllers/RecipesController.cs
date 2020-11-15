@@ -27,21 +27,60 @@ namespace API.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Recipe>>> Index()
+        public async Task<ActionResult<IEnumerable<RecipeForDisplayDto>>> Index()
         {
             var recipes = await recipeRepository.List();
-            return Ok(recipes);
+            var recipesForDisplay = new List<RecipeForDisplayDto>();
+
+            foreach(var recipe in recipes)
+            {
+                var recipeForDisplay = new RecipeForDisplayDto
+                {
+                    Name = recipe.Name,
+                    Description = recipe.Description,
+                    RecipeLines = recipe.RecipeLines,
+                    DateAdded = recipe.DateAdded,
+                    ViewCounter = recipe.ViewCounter,
+                    InFavourite = recipe.InFavourite,
+                    Likes = recipe.Likes,
+                    Categories = recipe.Categories,
+                    Diets = recipe.Diets,
+                    PhotoPath = recipe.PhotoPath,
+                    User = recipe.User,
+                    UserId = recipe.UserId
+                };
+                recipesForDisplay.Add(recipeForDisplay);
+            }
+
+            return Ok(recipesForDisplay);
         }
 
         [HttpGet("{id:guid}"), ActionName("Get")]
-        public async Task<ActionResult<Recipe>> Get(Guid id)
+        public async Task<ActionResult<RecipeForDisplayDto>> Get(Guid id)
         {
             var recipe = await recipeRepository.Get(id);
             if (recipe == null)
             {
                 return NotFound();
             }
-            return Ok(recipe);
+
+            var recipeForDisplay = new RecipeForDisplayDto
+            {
+                Name = recipe.Name,
+                Description = recipe.Description,
+                RecipeLines = recipe.RecipeLines,
+                DateAdded = recipe.DateAdded,
+                ViewCounter = recipe.ViewCounter,
+                InFavourite = recipe.InFavourite,
+                Likes = recipe.Likes,
+                Categories = recipe.Categories,
+                Diets = recipe.Diets,
+                PhotoPath = recipe.PhotoPath,
+                User = recipe.User,
+                UserId = recipe.UserId
+            };
+
+            return Ok(recipeForDisplay);
         }
 
         [HttpPost]
