@@ -56,6 +56,7 @@ namespace API.Controllers
 
             var userForDisplay = new UserForDisplayDto
             {
+                Id = userFromRepo.Id,
                 Name = userFromRepo.Name,
                 Email = userFromRepo.Email,
                 Role = userFromRepo.Role,
@@ -74,9 +75,9 @@ namespace API.Controllers
         }
 
         [HttpGet("{id:guid}/recipes")]
-        public async Task<ActionResult<IEnumerable<RecipeForDisplayDto>>> Recipes()
+        public async Task<ActionResult<IEnumerable<RecipeForDisplayDto>>> Recipes(Guid id)
         {
-            var recipes = await RecipeRepository.List();
+            var recipes = await UserRepository.GetUserRecipes(id);
             var recipesForDisplay = new List<RecipeForDisplayDto>();
 
             foreach (var recipe in recipes)

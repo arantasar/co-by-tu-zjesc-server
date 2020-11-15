@@ -9,6 +9,8 @@ namespace Persistence.Models
     public class UserForDisplayDto
     {
         [Required]
+        public Guid Id { get; set; }
+        [Required]
         [MaxLength(30)]
         [EmailAddress]
         public string Email { get; set; }

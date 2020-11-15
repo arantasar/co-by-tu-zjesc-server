@@ -82,5 +82,15 @@ namespace Persistence
 
                 return user.Documents.FirstOrDefault();
         }
+
+        public async Task<IEnumerable<Recipe>> GetUserRecipes(Guid id)
+        {
+            var recipes = await Context.SearchAsync<Recipe>(
+                s => s.Index("recipes").Query(
+                                q => q.Term(
+                                    p => p.UserId.Suffix("keyword"), id)));
+
+            return recipes.Documents;
+        }
     }
 }
