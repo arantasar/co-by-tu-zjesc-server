@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace API.Controllers
@@ -85,7 +86,7 @@ namespace API.Controllers
 
         [HttpPost]
         [Authorize(AuthenticationSchemes = "Bearer")]
-        public async Task<ActionResult<Recipe>> Add(RecipeForCreationDto recipeForCreationDto)
+        public async Task<ActionResult<Recipe>> Add([FromForm]RecipeForCreationDto recipeForCreationDto)
         {
             if (await recipeRepository.Exists(recipeForCreationDto.Name))
             {
@@ -100,14 +101,19 @@ namespace API.Controllers
                 uniqueFileName = PhotoHelper.AddPhoto(recipeForCreationDto.Photo,HttpContext ,"Photos", "RecipePhotos");
             }
 
+            var serializeOptions = new JsonSerializerOptions
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+            };
+
             var recipe = new Recipe
             {
                 UserId = Guid.Parse(id),
                 Name = recipeForCreationDto.Name,
-                Categories = recipeForCreationDto.Categories,
+                Categories = JsonSerializer.Deserialize<List<Category>>(recipeForCreationDto.Categories, serializeOptions),
                 Description = recipeForCreationDto.Description,
-                RecipeLines = recipeForCreationDto.RecipeLines,
-                Diets = recipeForCreationDto.Diets,
+                RecipeLines = JsonSerializer.Deserialize<List<RecipeLine>>(recipeForCreationDto.RecipeLines, serializeOptions),
+                Diets = JsonSerializer.Deserialize<List<Diet>>(recipeForCreationDto.Diets, serializeOptions),
                 PhotoPath = uniqueFileName
             };
             await recipeRepository.Add(recipe);
