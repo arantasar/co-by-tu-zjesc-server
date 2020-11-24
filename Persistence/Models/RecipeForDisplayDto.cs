@@ -31,7 +31,7 @@ namespace Domain
         public User User { get; set; }
 
         public Guid UserId { get; set; }
-        public string PrepareTime { get; set; }
+        public int PrepareTime { get; set; }
         public int Size { get; set; }
 
     }

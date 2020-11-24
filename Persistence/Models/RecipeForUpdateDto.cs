@@ -22,7 +22,7 @@ namespace Persistence.Models
         public List<Category> Categories { get; set; }
         public List<Diet> Diets { get; set; }
         public IFormFile Photo { get; set; }
-        public string PrepareTime { get; set; }
+        public int PrepareTime { get; set; }
         public int Size { get; set; }
     }
 }
