@@ -35,5 +35,4 @@ msbuild.wrn
 
 # Visual Studio 2015
 .vs/
-/API/wwwroot/Photos/UserPhotos
-/API/wwwroot/Photos/IngredientPhotos
+/API/wwwroot/Photos/
