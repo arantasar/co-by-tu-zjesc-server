@@ -48,7 +48,9 @@ namespace API.Controllers
                     Diets = recipe.Diets,
                     PhotoPath = recipe.PhotoPath,
                     User = recipe.User,
-                    UserId = recipe.UserId
+                    UserId = recipe.UserId,
+                    PrepareTime = recipe.PrepareTime,
+                    Size = recipe.Size
                 };
                 recipesForDisplay.Add(recipeForDisplay);
             }
@@ -78,7 +80,9 @@ namespace API.Controllers
                 Diets = recipe.Diets,
                 PhotoPath = recipe.PhotoPath,
                 User = recipe.User,
-                UserId = recipe.UserId
+                UserId = recipe.UserId,
+                PrepareTime = recipe.PrepareTime,
+                Size = recipe.Size
             };
 
             return Ok(recipeForDisplay);
@@ -114,7 +118,9 @@ namespace API.Controllers
                 Description = recipeForCreationDto.Description,
                 RecipeLines = JsonSerializer.Deserialize<List<RecipeLine>>(recipeForCreationDto.RecipeLines, serializeOptions),
                 Diets = JsonSerializer.Deserialize<List<Diet>>(recipeForCreationDto.Diets, serializeOptions),
-                PhotoPath = uniqueFileName
+                PhotoPath = uniqueFileName,
+                PrepareTime = recipeForCreationDto.PrepareTime,
+                Size = recipeForCreationDto.Size
             };
             await recipeRepository.Add(recipe);
             return CreatedAtAction("Get", new { id = recipe.Id }, recipe);
@@ -162,6 +168,8 @@ namespace API.Controllers
             recipeForUpdate.RecipeLines = recipeForUpdateDto.RecipeLines;
             recipeForUpdate.Categories = recipeForUpdateDto.Categories;
             recipeForUpdate.Diets = recipeForUpdateDto.Diets;
+            recipeForUpdate.PrepareTime = recipeForUpdateDto.PrepareTime;
+            recipeForUpdate.Size = recipeForUpdateDto.Size;
 
             await recipeRepository.Add(recipeForUpdate);
             return CreatedAtAction("Get", new { id = recipeForUpdate.Id }, recipeForUpdate);
