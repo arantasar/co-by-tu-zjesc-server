@@ -19,7 +19,7 @@ namespace Persistence.Models
         public string LastLogin { get; set; }
         [Required]
         public Role Role { get; set; }
-        public List<Recipe> Favourites { get; set; }
+        public List<RecipeForFavourite> Favourites { get; set; }
         public List<Recipe> Recipes { get; set; }
         public string PhotoPath { get; set; }
         public int DaysInService { get; set; }

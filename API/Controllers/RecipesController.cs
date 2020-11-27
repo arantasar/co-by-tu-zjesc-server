@@ -20,11 +20,13 @@ namespace API.Controllers
         private readonly IRecipeRepository recipeRepository;
 
         public PhotoHelper PhotoHelper { get; }
+        public IUserRepository UserRepository { get; }
 
-        public RecipesController(IRecipeRepository recipeRepository, PhotoHelper photoHelper)
+        public RecipesController(IRecipeRepository recipeRepository, PhotoHelper photoHelper, IUserRepository userRepository)
         {
             this.recipeRepository = recipeRepository;
             PhotoHelper = photoHelper;
+            UserRepository = userRepository;
         }
 
         [HttpGet]
@@ -66,6 +68,8 @@ namespace API.Controllers
             {
                 return NotFound();
             }
+
+            ViewCounterActualizer(recipe);
 
             var recipeForDisplay = new RecipeForDisplayDto
             {
@@ -133,6 +137,8 @@ namespace API.Controllers
             return NoContent();
         }
 
+        
+
         [HttpPost]
         [Route("update/{recipeId}")]
         [Authorize(AuthenticationSchemes = "Bearer")]
@@ -173,6 +179,73 @@ namespace API.Controllers
 
             await recipeRepository.Add(recipeForUpdate);
             return CreatedAtAction("Get", new { id = recipeForUpdate.Id }, recipeForUpdate);
+        }
+
+        [HttpPost]
+        [Route("favourites")]
+        [Authorize(AuthenticationSchemes = "Bearer")]
+        public async Task<ActionResult<int>> Favourites(Guid recipeId)
+        {
+            if (recipeId == null)
+            {
+                return NotFound(new { message = "Nie podano przepisu!" });
+            }
+
+            if (await recipeRepository.Exists(recipeId) == false)
+            {
+                return NotFound(new { message = "Brak przepisu w bazie!" });
+            }
+
+            var userId = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            var user = await UserRepository.Get(Guid.Parse(userId));
+
+            var recipeForUpdate = await recipeRepository.Get(recipeId);
+            
+            var recipeForFavourites = new RecipeForFavourite
+            {
+                Id = recipeForUpdate.Id,
+                Name = recipeForUpdate.Name,
+                Categories = recipeForUpdate.Categories,
+                Diets = recipeForUpdate.Diets,
+                PhotoPath = recipeForUpdate.PhotoPath,
+                UserName = recipeForUpdate.User.Name,
+                UserId = recipeForUpdate.UserId,
+                PrepareTime = recipeForUpdate.PrepareTime
+            };
+
+            if (user.Favourites.Contains(recipeForFavourites)) //przetestować
+            {
+                DecrementeInFavourite(recipeForUpdate);
+                user.Favourites.Remove(recipeForFavourites);
+            }
+            else
+            {
+            IncrementeInFavourite(recipeForUpdate);
+            user.Favourites.Add(recipeForFavourites);
+            }
+
+            return Ok(recipeForUpdate.InFavourite);
+        }
+
+
+        public void ViewCounterActualizer(Recipe recipe)
+        {
+            recipe.ViewCounter++;
+        }
+
+        public void IncrementeInFavourite(Recipe recipe)
+        {
+            recipe.InFavourite++;
+        }
+
+        public void DecrementeInFavourite(Recipe recipe)
+        {
+            recipe.InFavourite--;
+        }
+
+        public void AddLike(Recipe recipe)
+        {
+            recipe.Likes++;
         }
     }
 }
