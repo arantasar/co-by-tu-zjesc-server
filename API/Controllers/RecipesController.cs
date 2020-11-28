@@ -184,14 +184,14 @@ namespace API.Controllers
         [HttpPost]
         [Route("favourites")]
         [Authorize(AuthenticationSchemes = "Bearer")]
-        public async Task<ActionResult<int>> Favourites(Guid recipeId)
+        public async Task<ActionResult<int>> Favourites(RecipeIdWrapper recipeIdWrapper)
         {
-            if (recipeId == null)
+            if (recipeIdWrapper.Id == null)
             {
                 return NotFound(new { message = "Nie podano przepisu!" });
             }
 
-            if (await recipeRepository.Exists(recipeId) == false)
+            if (await recipeRepository.Exists(recipeIdWrapper.Id) == false)
             {
                 return NotFound(new { message = "Brak przepisu w bazie!" });
             }
@@ -199,7 +199,7 @@ namespace API.Controllers
             var userId = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
             var user = await UserRepository.Get(Guid.Parse(userId));
 
-            var recipeForUpdate = await recipeRepository.Get(recipeId);
+            var recipeForUpdate = await recipeRepository.Get(recipeIdWrapper.Id);
             
             var recipeForFavourites = new RecipeForFavourite
             {
@@ -208,7 +208,7 @@ namespace API.Controllers
                 Categories = recipeForUpdate.Categories,
                 Diets = recipeForUpdate.Diets,
                 PhotoPath = recipeForUpdate.PhotoPath,
-                UserName = recipeForUpdate.User.Name,
+                UserName = user.Name,
                 UserId = recipeForUpdate.UserId,
                 PrepareTime = recipeForUpdate.PrepareTime
             };

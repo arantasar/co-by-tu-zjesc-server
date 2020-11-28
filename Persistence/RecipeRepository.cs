@@ -39,7 +39,7 @@ namespace Persistence
             var query = await Context.SearchAsync<Recipe>(
                  s => s.Index("recipes").Query(
                     q => q.Term(
-                        p => p.Name.Suffix("keyword"), id)));
+                        p => p.Id.Suffix("keyword"), id)));
 
             return query.Hits.Count > 0;
         }
