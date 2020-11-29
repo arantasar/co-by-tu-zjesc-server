@@ -184,7 +184,7 @@ namespace API.Controllers
         [HttpPost]
         [Route("favourites")]
         [Authorize(AuthenticationSchemes = "Bearer")]
-        public async Task<ActionResult<int>> Favourites(RecipeIdWrapper recipeIdWrapper)
+        public async Task<ActionResult<Recipe>> Favourites(RecipeIdWrapper recipeIdWrapper)
         {
             if (recipeIdWrapper.Id == null)
             {
@@ -199,32 +199,32 @@ namespace API.Controllers
             var userId = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
             var user = await UserRepository.Get(Guid.Parse(userId));
 
-            var recipeForUpdate = await recipeRepository.Get(recipeIdWrapper.Id);
+            var recipe = await recipeRepository.Get(recipeIdWrapper.Id);
             
             var recipeForFavourites = new RecipeForFavourite
             {
-                Id = recipeForUpdate.Id,
-                Name = recipeForUpdate.Name,
-                Categories = recipeForUpdate.Categories,
-                Diets = recipeForUpdate.Diets,
-                PhotoPath = recipeForUpdate.PhotoPath,
+                Id = recipe.Id,
+                Name = recipe.Name,
+                Categories = recipe.Categories,
+                Diets = recipe.Diets,
+                PhotoPath = recipe.PhotoPath,
                 UserName = user.Name,
-                UserId = recipeForUpdate.UserId,
-                PrepareTime = recipeForUpdate.PrepareTime
+                UserId = recipe.UserId,
+                PrepareTime = recipe.PrepareTime
             };
 
             if (user.Favourites.Contains(recipeForFavourites)) //przetestować
             {
-                DecrementeInFavourite(recipeForUpdate);
+                DecrementeInFavourite(recipe);
                 user.Favourites.Remove(recipeForFavourites);
             }
             else
             {
-            IncrementeInFavourite(recipeForUpdate);
+            IncrementeInFavourite(recipe);
             user.Favourites.Add(recipeForFavourites);
             }
 
-            return Ok(recipeForUpdate.InFavourite);
+            return Ok(recipe);
         }
 
 
