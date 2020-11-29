@@ -258,25 +258,25 @@ namespace API.Controllers
         }
 
 
-        public async Task ViewCounterActualizer(Recipe recipe)
+        private async Task ViewCounterActualizer(Recipe recipe)
         {
             recipe.ViewCounter++;
             await recipeRepository.VievCounterRepositoryActualizer(recipe);
         }
 
-        public async Task IncrementInFavourite(Recipe recipe)
+        private async Task IncrementInFavourite(Recipe recipe)
         {
             recipe.InFavourite++;
             await recipeRepository.IncrementInFavouriteRepository(recipe);
         }
 
-        public async Task DecrementInFavourite(Recipe recipe)
+        private async Task DecrementInFavourite(Recipe recipe)
         {
             recipe.InFavourite--;
             await recipeRepository.DecrementInFavouriteRepository(recipe);
         }
 
-        public async Task AddLike(Recipe recipe)
+        private async Task AddLike(Recipe recipe)
         {
             recipe.Likes++;
             await recipeRepository.AddLikeRepository(recipe);
