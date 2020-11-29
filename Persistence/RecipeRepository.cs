@@ -69,6 +69,8 @@ namespace Persistence
         {
             var result = await Context.GetAsync<Recipe>(recipe.Id, selector => selector.Index("recipes"));
             result.Source.ViewCounter++;
+
+            await Context.UpdateAsync<Recipe>(result.Source.Id, selector => selector.Index("recipes").Doc(result.Source).Refresh(Refresh.True));
         }
     }
 }
