@@ -217,13 +217,13 @@ namespace API.Controllers
 
             if (user.Favourites.Contains(recipeForFavourites)) //przetestować
             {
-                DecrementeInFavourite(recipe);
+                await DecrementInFavourite(recipe);
                 user.Favourites.Remove(recipeForFavourites);
             }
             else
             {
-            IncrementeInFavourite(recipe);
-            user.Favourites.Add(recipeForFavourites);
+                await IncrementInFavourite(recipe);
+                user.Favourites.Add(recipeForFavourites);
             }
 
             return Ok(recipe);
@@ -236,14 +236,16 @@ namespace API.Controllers
             await recipeRepository.VievCounterRepositoryActualizer(recipe);
         }
 
-        public void IncrementeInFavourite(Recipe recipe)
+        public async Task IncrementInFavourite(Recipe recipe)
         {
             recipe.InFavourite++;
+            await recipeRepository.IncrementInFavouriteRepository(recipe);
         }
 
-        public void DecrementeInFavourite(Recipe recipe)
+        public async Task DecrementInFavourite(Recipe recipe)
         {
             recipe.InFavourite--;
+            await recipeRepository.DecrementInFavouriteRepository(recipe);
         }
 
         public void AddLike(Recipe recipe)

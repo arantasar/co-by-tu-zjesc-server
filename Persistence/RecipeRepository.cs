@@ -72,5 +72,23 @@ namespace Persistence
 
             await Context.UpdateAsync<Recipe>(result.Source.Id, selector => selector.Index("recipes").Doc(result.Source).Refresh(Refresh.True));
         }
+
+        public async Task IncrementInFavouriteRepository(Recipe recipe)
+        {
+            var result = await Context.GetAsync<Recipe>(recipe.Id, selector => selector.Index("recipes"));
+            result.Source.InFavourite++;
+
+            await Context.UpdateAsync<Recipe>(result.Source.Id, selector => selector.Index("recipes").Doc(result.Source).Refresh(Refresh.True));
+        }
+        public async Task DecrementInFavouriteRepository(Recipe recipe)
+        {
+            var result = await Context.GetAsync<Recipe>(recipe.Id, selector => selector.Index("recipes"));
+            result.Source.InFavourite--;
+
+            await Context.UpdateAsync<Recipe>(result.Source.Id, selector => selector.Index("recipes").Doc(result.Source).Refresh(Refresh.True));
+        }
+
+        
+
     }
 }
