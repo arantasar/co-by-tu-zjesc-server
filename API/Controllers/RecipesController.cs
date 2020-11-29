@@ -238,7 +238,7 @@ namespace API.Controllers
         [HttpPost]
         [Route("likes")]
         [Authorize(AuthenticationSchemes = "Bearer")]
-        public async Task<ActionResult<int>> Likes(RecipeIdWrapper recipeIdWrapper)
+        public async Task<ActionResult<Recipe>> Likes(RecipeIdWrapper recipeIdWrapper)
         {
             if (recipeIdWrapper.Id == null)
             {
@@ -254,7 +254,7 @@ namespace API.Controllers
 
             await AddLike(recipe);
 
-            return Ok(recipe.Likes);
+            return Ok(recipe);
         }
 
 
