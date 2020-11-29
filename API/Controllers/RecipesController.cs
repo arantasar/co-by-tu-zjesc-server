@@ -186,7 +186,7 @@ namespace API.Controllers
         [HttpPost]
         [Route("favourites")]
         [Authorize(AuthenticationSchemes = "Bearer")]
-        public async Task<ActionResult<Recipe>> Favourites(RecipeIdWrapper recipeIdWrapper)
+        public async Task<ActionResult<UserWithRecipeDto>> Favourites(RecipeIdWrapper recipeIdWrapper)
         {
             if (recipeIdWrapper.Id == null)
             {
@@ -215,18 +215,24 @@ namespace API.Controllers
                 PrepareTime = recipe.PrepareTime
             };
 
-            if (user.Favourites.Contains(recipeForFavourites)) //przetestować
+            var recipeInFavourites = user.Favourites.Find(r => r.Id == recipeForFavourites.Id);
+
+            if (recipeInFavourites != null)
             {
                 await DecrementInFavourite(recipe);
-                user.Favourites.Remove(recipeForFavourites);
+                user.Favourites.Remove(recipeInFavourites);
             }
             else
             {
                 await IncrementInFavourite(recipe);
                 user.Favourites.Add(recipeForFavourites);
             }
+            await UserRepository.Add(user);
 
-            return Ok(recipe);
+            return Ok(new UserWithRecipeDto {
+                Recipe = recipe,
+                User = user
+            });
         }
 
 
