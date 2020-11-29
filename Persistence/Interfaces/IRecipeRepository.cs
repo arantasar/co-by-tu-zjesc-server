@@ -18,5 +18,6 @@ namespace Persistence.Interfaces
         Task VievCounterRepositoryActualizer(Recipe recipe);
         Task IncrementInFavouriteRepository(Recipe recipe);
         Task DecrementInFavouriteRepository(Recipe recipe);
+        Task AddLikeRepository(Recipe recipe);
     }
 }

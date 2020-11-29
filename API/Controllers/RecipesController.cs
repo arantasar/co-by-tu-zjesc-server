@@ -235,6 +235,28 @@ namespace API.Controllers
             });
         }
 
+        [HttpPost]
+        [Route("likes")]
+        [Authorize(AuthenticationSchemes = "Bearer")]
+        public async Task<ActionResult<int>> Likes(RecipeIdWrapper recipeIdWrapper)
+        {
+            if (recipeIdWrapper.Id == null)
+            {
+                return NotFound(new { message = "Nie podano przepisu!" });
+            }
+
+            if (await recipeRepository.Exists(recipeIdWrapper.Id) == false)
+            {
+                return NotFound(new { message = "Brak przepisu w bazie!" });
+            }
+
+            var recipe = await recipeRepository.Get(recipeIdWrapper.Id);
+
+            await AddLike(recipe);
+
+            return Ok(recipe.Likes);
+        }
+
 
         public async Task ViewCounterActualizer(Recipe recipe)
         {
@@ -254,9 +276,10 @@ namespace API.Controllers
             await recipeRepository.DecrementInFavouriteRepository(recipe);
         }
 
-        public void AddLike(Recipe recipe)
+        public async Task AddLike(Recipe recipe)
         {
             recipe.Likes++;
+            await recipeRepository.AddLikeRepository(recipe);
         }
     }
 }

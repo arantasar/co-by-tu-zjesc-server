@@ -88,6 +88,14 @@ namespace Persistence
             await Context.UpdateAsync<Recipe>(result.Source.Id, selector => selector.Index("recipes").Doc(result.Source).Refresh(Refresh.True));
         }
 
+        public async Task AddLikeRepository(Recipe recipe)
+        {
+            var result = await Context.GetAsync<Recipe>(recipe.Id, selector => selector.Index("recipes"));
+            result.Source.Likes++;
+
+            await Context.UpdateAsync<Recipe>(result.Source.Id, selector => selector.Index("recipes").Doc(result.Source).Refresh(Refresh.True));
+        }
+
         
 
     }
