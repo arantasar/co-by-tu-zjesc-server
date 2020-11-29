@@ -64,5 +64,11 @@ namespace Persistence
         {
             await Context.DeleteAsync<Recipe>(id, selector => selector.Index("units").Refresh(Refresh.True));
         }
+
+        public async Task VievCounterRepositoryActualizer(Recipe recipe)
+        {
+            var result = await Context.GetAsync<Recipe>(recipe.Id, selector => selector.Index("recipes"));
+            result.Source.ViewCounter++;
+        }
     }
 }

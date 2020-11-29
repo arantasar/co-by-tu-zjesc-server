@@ -228,9 +228,10 @@ namespace API.Controllers
         }
 
 
-        public void ViewCounterActualizer(Recipe recipe)
+        public async Task ViewCounterActualizer(Recipe recipe)
         {
             recipe.ViewCounter++;
+            await recipeRepository.VievCounterRepositoryActualizer(recipe);
         }
 
         public void IncrementeInFavourite(Recipe recipe)

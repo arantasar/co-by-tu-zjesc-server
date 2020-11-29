@@ -15,5 +15,6 @@ namespace Persistence.Interfaces
         Task<IEnumerable<Recipe>> List();
         Task<bool> Exists(string name);
         Task<bool> Exists(Guid id);
+        Task VievCounterRepositoryActualizer(Recipe recipe);
     }
 }
