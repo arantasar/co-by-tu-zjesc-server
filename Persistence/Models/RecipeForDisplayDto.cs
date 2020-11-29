@@ -9,6 +9,7 @@ namespace Persistence.Models
 {
     public class RecipeForDisplayDto
     {
+        public Guid Id { get; set; }
         [Required]
         [MaxLength(60)]
         public string Name { get; set; }

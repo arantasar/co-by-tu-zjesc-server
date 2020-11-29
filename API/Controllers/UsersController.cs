@@ -84,6 +84,7 @@ namespace API.Controllers
             {
                 var recipeForDisplay = new RecipeForDisplayDto
                 {
+                    Id = recipe.Id,
                     Name = recipe.Name,
                     Description = recipe.Description,
                     RecipeLines = recipe.RecipeLines,
