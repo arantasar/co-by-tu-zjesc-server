@@ -22,7 +22,7 @@ namespace Domain
         public string LastLogin { get; set; } = DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss");
         public string DateCreated { get; set; } = DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss");
         public Role Role { get; set; } = Role.USER;
-        public List<RecipeForFavourite> Favourites { get; set; }
+        public List<RecipeForFavourite> Favourites { get; set; } = new List<RecipeForFavourite>();
         public List<Recipe> Recipes { get; set; } = new List<Recipe>();
         public string PhotoPath { get; set; }
         public int ReceivedLikes { get; set; }
