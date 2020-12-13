@@ -21,6 +21,7 @@ namespace API
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
+                    webBuilder.UseUrls("http://192.168.100.4:5000", "http://localhost:5000");
                 });
     }
 }
