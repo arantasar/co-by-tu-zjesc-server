@@ -17,6 +17,7 @@ namespace Persistence.Models
         [Required]
         public string Name { get; set; }
         public string LastLogin { get; set; }
+        public string DateCreated { get; set; }
         [Required]
         public Role Role { get; set; }
         public List<RecipeForFavourite> Favourites { get; set; }

@@ -64,7 +64,9 @@ namespace API.Controllers
                 PhotoPath = userFromRepo.PhotoPath,
                 LastLogin = userFromRepo.LastLogin,
                 Recipes = userFromRepo.Recipes,
-                Description = userFromRepo.Description
+                Description = userFromRepo.Description,
+                DateCreated = userFromRepo.DateCreated
+                
             };
 
             var token = TokenHelper.CreateToken(user);
