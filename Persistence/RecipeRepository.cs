@@ -53,7 +53,7 @@ namespace Persistence
         public async Task<IEnumerable<Recipe>> List()
         {
             var result = await Context.SearchAsync<Recipe>(item => item
-                 .Index("units")
+                 .Index("recipes")
                  .MatchAll()
                  .Sort(ss => ss.Ascending(p => p.Name.Suffix("keyword")))
             );
@@ -62,7 +62,7 @@ namespace Persistence
 
         public async Task Remove(Guid id)
         {
-            await Context.DeleteAsync<Recipe>(id, selector => selector.Index("units").Refresh(Refresh.True));
+            await Context.DeleteAsync<Recipe>(id, selector => selector.Index("recipes").Refresh(Refresh.True));
         }
 
         public async Task VievCounterRepositoryActualizer(Recipe recipe)

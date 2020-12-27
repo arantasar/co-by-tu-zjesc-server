@@ -257,6 +257,69 @@ namespace API.Controllers
             return Ok(recipe);
         }
 
+        [HttpGet("newestten")]
+        public async Task<ActionResult<IEnumerable<RecipeForDisplayDto>>> NewestTen()
+        {
+            var recipes = await recipeRepository.List();
+            var recipesForDisplay = new List<RecipeForDisplayDto>();
+            Recipe[] recipesSortedByDate = new Recipe[] {};
+
+            recipesSortedByDate = recipes.OrderByDescending(o => DateTime.Parse(o.DateAdded)).ToArray();
+            
+            if(recipesSortedByDate.Length < 10)
+            {
+                for (int i = 0; i < recipesSortedByDate.Length; i++)
+                {
+                    var recipeForDisplay = new RecipeForDisplayDto
+                    {
+                        Id = recipesSortedByDate[i].Id,
+                        Name = recipesSortedByDate[i].Name,
+                        Description = recipesSortedByDate[i].Description,
+                        RecipeLines = recipesSortedByDate[i].RecipeLines,
+                        DateAdded = recipesSortedByDate[i].DateAdded,
+                        ViewCounter = recipesSortedByDate[i].ViewCounter,
+                        InFavourite = recipesSortedByDate[i].InFavourite,
+                        Likes = recipesSortedByDate[i].Likes,
+                        Categories = recipesSortedByDate[i].Categories,
+                        Diets = recipesSortedByDate[i].Diets,
+                        PhotoPath = recipesSortedByDate[i].PhotoPath,
+                        User = recipesSortedByDate[i].User,
+                        UserId = recipesSortedByDate[i].UserId,
+                        PrepareTime = recipesSortedByDate[i].PrepareTime,
+                        Size = recipesSortedByDate[i].Size
+                    };
+                    recipesForDisplay.Add(recipeForDisplay);
+                }
+            }
+            else
+            {
+                for (int i = 0; i < 10; i++)
+                {
+                    var recipeForDisplay = new RecipeForDisplayDto
+                    {
+                        Id = recipesSortedByDate[i].Id,
+                        Name = recipesSortedByDate[i].Name,
+                        Description = recipesSortedByDate[i].Description,
+                        RecipeLines = recipesSortedByDate[i].RecipeLines,
+                        DateAdded = recipesSortedByDate[i].DateAdded,
+                        ViewCounter = recipesSortedByDate[i].ViewCounter,
+                        InFavourite = recipesSortedByDate[i].InFavourite,
+                        Likes = recipesSortedByDate[i].Likes,
+                        Categories = recipesSortedByDate[i].Categories,
+                        Diets = recipesSortedByDate[i].Diets,
+                        PhotoPath = recipesSortedByDate[i].PhotoPath,
+                        User = recipesSortedByDate[i].User,
+                        UserId = recipesSortedByDate[i].UserId,
+                        PrepareTime = recipesSortedByDate[i].PrepareTime,
+                        Size = recipesSortedByDate[i].Size
+                    };
+                    recipesForDisplay.Add(recipeForDisplay);
+                }
+            }
+
+            return Ok(recipesForDisplay);
+        }
+
 
         private async Task ViewCounterActualizer(Recipe recipe)
         {
