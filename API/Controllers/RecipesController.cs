@@ -257,8 +257,8 @@ namespace API.Controllers
             return Ok(recipe);
         }
 
-        [HttpGet("newestten")]
-        public async Task<ActionResult<IEnumerable<RecipeForDisplayDto>>> NewestTen()
+        [HttpGet("newest/{amount}")]
+        public async Task<ActionResult<IEnumerable<RecipeForDisplayDto>>> Newest(int amount)
         {
             var recipes = await recipeRepository.List();
             var recipesForDisplay = new List<RecipeForDisplayDto>();
@@ -266,7 +266,7 @@ namespace API.Controllers
 
             recipesSortedByDate = recipes.OrderByDescending(o => DateTime.Parse(o.DateAdded)).ToArray();
 
-            var arrayRange = Math.Min(10, recipesSortedByDate.Length);
+            var arrayRange = Math.Min(amount, recipesSortedByDate.Length);
             
             for (int i = 0; i < arrayRange; i++)
             {
