@@ -257,8 +257,8 @@ namespace API.Controllers
             return Ok(recipe);
         }
 
-        [HttpGet("newest/{amount}")]
-        public async Task<ActionResult<IEnumerable<RecipeForDisplayDto>>> Newest(int amount)
+        [HttpGet("newest/{amount?}")]
+        public async Task<ActionResult<IEnumerable<RecipeForDisplayDto>>> Newest(int amount = 4)
         {
             var recipes = await recipeRepository.List();
             var recipesForDisplay = new List<RecipeForDisplayDto>();
