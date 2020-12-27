@@ -62,7 +62,7 @@ namespace Persistence
         public async Task<IEnumerable<User>> List()
         {
             var result = await Context.SearchAsync<User>(item => item
-                       .Index("units")
+                       .Index("users")
                        .MatchAll()
                        .Sort(ss => ss.Ascending(p => p.Name.Suffix("keyword"))));
             return new List<User>(result.Documents);

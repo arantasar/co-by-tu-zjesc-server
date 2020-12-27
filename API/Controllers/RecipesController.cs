@@ -270,6 +270,7 @@ namespace API.Controllers
             
             for (int i = 0; i < arrayRange; i++)
             {
+                var userForRecipe = await UserRepository.Get(recipesSortedByDate[i].UserId);
                 var recipeForDisplay = new RecipeForDisplayDto
                 {
                     Id = recipesSortedByDate[i].Id,
@@ -284,7 +285,7 @@ namespace API.Controllers
                     Diets = recipesSortedByDate[i].Diets,
                     PhotoPath = recipesSortedByDate[i].PhotoPath,
                     userForRecipeDto = new UserForRecipeDto 
-                    { Id = recipesSortedByDate[i].Id, Name = recipesSortedByDate[i].Name, PhotoPath = recipesSortedByDate[i].PhotoPath },
+                    { Id = userForRecipe.Id, Name = userForRecipe.Name, PhotoPath = userForRecipe.PhotoPath },
                     UserId = recipesSortedByDate[i].UserId,
                     PrepareTime = recipesSortedByDate[i].PrepareTime,
                     Size = recipesSortedByDate[i].Size
