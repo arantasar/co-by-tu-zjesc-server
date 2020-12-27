@@ -97,7 +97,7 @@ namespace API.Controllers
                     Categories = recipe.Categories,
                     Diets = recipe.Diets,
                     PhotoPath = recipe.PhotoPath,
-                    User = recipe.User,
+                    userForRecipeDto = new UserForRecipeDto { Id = recipe.Id, Name = recipe.Name, PhotoPath = recipe.PhotoPath },
                     UserId = recipe.UserId
                 };
                 recipesForDisplay.Add(recipeForDisplay);

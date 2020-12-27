@@ -30,7 +30,7 @@ namespace Persistence.Models
         //public List<string> PhotosPath { get; set; } = new List<string>(); //to samo co w Recipe.cs
         public string PhotoPath { get; set; }
         [ForeignKey("UserId")]
-        public User User { get; set; }
+        public UserForRecipeDto userForRecipeDto { get; set; }
 
         public Guid UserId { get; set; }
         public int PrepareTime { get; set; }

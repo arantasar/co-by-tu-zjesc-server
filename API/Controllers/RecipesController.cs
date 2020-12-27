@@ -50,7 +50,7 @@ namespace API.Controllers
                     Categories = recipe.Categories,
                     Diets = recipe.Diets,
                     PhotoPath = recipe.PhotoPath,
-                    User = recipe.User,
+                    userForRecipeDto = new UserForRecipeDto { Id = recipe.Id, Name = recipe.Name, PhotoPath = recipe.PhotoPath },
                     UserId = recipe.UserId,
                     PrepareTime = recipe.PrepareTime,
                     Size = recipe.Size
@@ -85,7 +85,7 @@ namespace API.Controllers
                 Categories = recipe.Categories,
                 Diets = recipe.Diets,
                 PhotoPath = recipe.PhotoPath,
-                User = recipe.User,
+                userForRecipeDto = new UserForRecipeDto {Id = recipe.Id, Name = recipe.Name, PhotoPath = recipe.PhotoPath },
                 UserId = recipe.UserId,
                 PrepareTime = recipe.PrepareTime,
                 Size = recipe.Size
@@ -283,7 +283,8 @@ namespace API.Controllers
                     Categories = recipesSortedByDate[i].Categories,
                     Diets = recipesSortedByDate[i].Diets,
                     PhotoPath = recipesSortedByDate[i].PhotoPath,
-                    User = recipesSortedByDate[i].User,
+                    userForRecipeDto = new UserForRecipeDto 
+                    { Id = recipesSortedByDate[i].Id, Name = recipesSortedByDate[i].Name, PhotoPath = recipesSortedByDate[i].PhotoPath },
                     UserId = recipesSortedByDate[i].UserId,
                     PrepareTime = recipesSortedByDate[i].PrepareTime,
                     Size = recipesSortedByDate[i].Size
