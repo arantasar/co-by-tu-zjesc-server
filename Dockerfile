@@ -1,20 +1,19 @@
-FROM mcr.microsoft.com/dotnet/core/sdk:3.1 AS build
-WORKDIR /source
+FROM mcr.microsoft.com/dotnet/sdk:3.1.404-alpine3.12 AS build
+WORKDIR /src
 
-# copy csproj and restore as distinct layers
 COPY *.sln .
 COPY ./API/*.csproj ./API/
 COPY ./Domain/*.csproj ./Domain/
 COPY ./Persistence/*.csproj ./Persistence/
 
 RUN dotnet restore
-
-# copy and publish app and libraries
 COPY . .
-RUN dotnet publish -c release -o /app --no-restore
 
-# final stage/image
-FROM mcr.microsoft.com/dotnet/core/aspnet:3.1
+RUN dotnet build -c Release --no-restore
+RUN dotnet publish -c Release -o /app --no-restore
+
+
+FROM mcr.microsoft.com/dotnet/aspnet:3.1.10-alpine3.12
 WORKDIR /app
 COPY --from=build /app .
-ENTRYPOINT ["./API"]
+ENTRYPOINT ["dotnet", "API.dll"]
