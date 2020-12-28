@@ -37,6 +37,7 @@ namespace API.Controllers
 
             foreach(var recipe in recipes)
             {
+                var userForRecipe = await UserRepository.Get(recipe.UserId);
                 var recipeForDisplay = new RecipeForDisplayDto
                 {
                     Id = recipe.Id,
@@ -50,7 +51,7 @@ namespace API.Controllers
                     Categories = recipe.Categories,
                     Diets = recipe.Diets,
                     PhotoPath = recipe.PhotoPath,
-                    User = new UserForRecipeDto { Id = recipe.Id, Name = recipe.Name, PhotoPath = recipe.PhotoPath },
+                    User = new UserForRecipeDto { Id = userForRecipe.Id, Name = userForRecipe.Name, PhotoPath = userForRecipe.PhotoPath },
                     UserId = recipe.UserId,
                     PrepareTime = recipe.PrepareTime,
                     Size = recipe.Size
@@ -72,6 +73,7 @@ namespace API.Controllers
 
             await ViewCounterActualizer(recipe);
 
+            var userForRecipe = await UserRepository.Get(recipe.UserId);
             var recipeForDisplay = new RecipeForDisplayDto
             {
                 Id = recipe.Id,
@@ -85,7 +87,7 @@ namespace API.Controllers
                 Categories = recipe.Categories,
                 Diets = recipe.Diets,
                 PhotoPath = recipe.PhotoPath,
-                User = new UserForRecipeDto {Id = recipe.Id, Name = recipe.Name, PhotoPath = recipe.PhotoPath },
+                User = new UserForRecipeDto {Id = userForRecipe.Id, Name = userForRecipe.Name, PhotoPath = userForRecipe.PhotoPath },
                 UserId = recipe.UserId,
                 PrepareTime = recipe.PrepareTime,
                 Size = recipe.Size
@@ -289,6 +291,44 @@ namespace API.Controllers
                     UserId = recipesSortedByDate[i].UserId,
                     PrepareTime = recipesSortedByDate[i].PrepareTime,
                     Size = recipesSortedByDate[i].Size
+                };
+                recipesForDisplay.Add(recipeForDisplay);
+            }
+            return Ok(recipesForDisplay);
+        }
+
+        [HttpGet("newest/{amount?}")]
+        public async Task<ActionResult<IEnumerable<RecipeForDisplayDto>>> MostLiked(int amount = 4)
+        {
+            var recipes = await recipeRepository.List();
+            var recipesForDisplay = new List<RecipeForDisplayDto>();
+            Recipe[] recipesSortedByLikes = new Recipe[] { };
+
+            recipesSortedByLikes = recipes.OrderByDescending(o => o.Likes).ToArray();
+
+            var arrayRange = Math.Min(amount, recipesSortedByLikes.Length);
+
+            for (int i = 0; i < arrayRange; i++)
+            {
+                var userForRecipe = await UserRepository.Get(recipesSortedByLikes[i].UserId);
+                var recipeForDisplay = new RecipeForDisplayDto
+                {
+                    Id = recipesSortedByLikes[i].Id,
+                    Name = recipesSortedByLikes[i].Name,
+                    Description = recipesSortedByLikes[i].Description,
+                    RecipeLines = recipesSortedByLikes[i].RecipeLines,
+                    DateAdded = recipesSortedByLikes[i].DateAdded,
+                    ViewCounter = recipesSortedByLikes[i].ViewCounter,
+                    InFavourite = recipesSortedByLikes[i].InFavourite,
+                    Likes = recipesSortedByLikes[i].Likes,
+                    Categories = recipesSortedByLikes[i].Categories,
+                    Diets = recipesSortedByLikes[i].Diets,
+                    PhotoPath = recipesSortedByLikes[i].PhotoPath,
+                    User = new UserForRecipeDto
+                    { Id = userForRecipe.Id, Name = userForRecipe.Name, PhotoPath = userForRecipe.PhotoPath },
+                    UserId = recipesSortedByLikes[i].UserId,
+                    PrepareTime = recipesSortedByLikes[i].PrepareTime,
+                    Size = recipesSortedByLikes[i].Size
                 };
                 recipesForDisplay.Add(recipeForDisplay);
             }

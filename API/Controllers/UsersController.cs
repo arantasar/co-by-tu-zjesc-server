@@ -84,6 +84,7 @@ namespace API.Controllers
 
             foreach (var recipe in recipes)
             {
+                var userForRecipe = await UserRepository.Get(recipe.UserId);
                 var recipeForDisplay = new RecipeForDisplayDto
                 {
                     Id = recipe.Id,
@@ -97,7 +98,7 @@ namespace API.Controllers
                     Categories = recipe.Categories,
                     Diets = recipe.Diets,
                     PhotoPath = recipe.PhotoPath,
-                    User = new UserForRecipeDto { Id = recipe.Id, Name = recipe.Name, PhotoPath = recipe.PhotoPath },
+                    User = new UserForRecipeDto { Id = userForRecipe.Id, Name = userForRecipe.Name, PhotoPath = userForRecipe.PhotoPath },
                     UserId = recipe.UserId
                 };
                 recipesForDisplay.Add(recipeForDisplay);

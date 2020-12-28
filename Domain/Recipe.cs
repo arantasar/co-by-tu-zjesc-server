@@ -16,9 +16,7 @@ namespace Domain
         [MaxLength(3000)]
         public string Description { get; set; }
         public List<RecipeLine> RecipeLines { get; set; } = new List<RecipeLine>();
-
         public string DateAdded { get; set; } = DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss");
-
         public int ViewCounter { get; set; }
         public int InFavourite { get; set; }
         public int Likes { get; set; }
@@ -30,7 +28,6 @@ namespace Domain
         public string PhotoPath { get; set; }
         [ForeignKey("UserId")]
         public User User { get; set; }
-
         public Guid UserId { get; set; }
         public int PrepareTime { get; set; }
         public int Size { get; set; }
