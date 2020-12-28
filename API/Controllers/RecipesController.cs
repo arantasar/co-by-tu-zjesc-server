@@ -297,7 +297,7 @@ namespace API.Controllers
             return Ok(recipesForDisplay);
         }
 
-        [HttpGet("newest/{amount?}")]
+        [HttpGet("mostliked/{amount?}")]
         public async Task<ActionResult<IEnumerable<RecipeForDisplayDto>>> MostLiked(int amount = 4)
         {
             var recipes = await recipeRepository.List();
