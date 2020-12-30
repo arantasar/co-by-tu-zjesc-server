@@ -205,6 +205,7 @@ namespace API.Controllers
 
             var recipe = await recipeRepository.Get(recipeIdWrapper.Id);
             
+            // Okrojony przepis do zapisania w bazie w tablicy favourites dla użytkownika
             var recipeForFavourites = new RecipeForFavourite
             {
                 Id = recipe.Id,
@@ -231,8 +232,27 @@ namespace API.Controllers
             }
             await UserRepository.Add(user);
 
+            var userForRecipe = await UserRepository.Get(recipe.UserId);
+            var recipeForDisplay = new RecipeForDisplayDto() {
+                Id = recipe.Id,
+                Name = recipe.Name,
+                Description = recipe.Description,
+                RecipeLines = recipe.RecipeLines,
+                DateAdded = recipe.DateAdded,
+                ViewCounter = recipe.ViewCounter,
+                InFavourite = recipe.InFavourite,
+                Likes = recipe.Likes,
+                Categories = recipe.Categories,
+                Diets = recipe.Diets,
+                PhotoPath = recipe.PhotoPath,
+                User = new UserForRecipeDto { Id = userForRecipe.Id, Name = userForRecipe.Name, PhotoPath = userForRecipe.PhotoPath },
+                UserId = recipe.UserId,
+                PrepareTime = recipe.PrepareTime,
+                Size = recipe.Size
+            };
+
             return Ok(new UserWithRecipeDto {
-                Recipe = recipe,
+                Recipe = recipeForDisplay,
                 User = user
             });
         }
@@ -256,7 +276,27 @@ namespace API.Controllers
 
             await AddLike(recipe);
 
-            return Ok(recipe);
+            var userForRecipe = await UserRepository.Get(recipe.UserId);
+            var recipeForDisplay = new RecipeForDisplayDto()
+            {
+                Id = recipe.Id,
+                Name = recipe.Name,
+                Description = recipe.Description,
+                RecipeLines = recipe.RecipeLines,
+                DateAdded = recipe.DateAdded,
+                ViewCounter = recipe.ViewCounter,
+                InFavourite = recipe.InFavourite,
+                Likes = recipe.Likes,
+                Categories = recipe.Categories,
+                Diets = recipe.Diets,
+                PhotoPath = recipe.PhotoPath,
+                User = new UserForRecipeDto { Id = userForRecipe.Id, Name = userForRecipe.Name, PhotoPath = userForRecipe.PhotoPath },
+                UserId = recipe.UserId,
+                PrepareTime = recipe.PrepareTime,
+                Size = recipe.Size
+            };
+
+            return Ok(recipeForDisplay);
         }
 
         [HttpGet("newest/{amount?}")]
