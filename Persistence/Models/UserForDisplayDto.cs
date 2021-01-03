@@ -26,6 +26,7 @@ namespace Persistence.Models
         public int DaysInService { get; set; }
         public int ReceivedLikes { get; set; }
         public string Description { get; set; }
+        public int RecipesAddedCount { get; set; }
 
     }
 }

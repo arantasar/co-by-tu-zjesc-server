@@ -92,5 +92,13 @@ namespace Persistence
 
             return recipes.Documents;
         }
+
+        public async Task IncrementReceivedLikes(User user)
+        {
+            var result = await Context.GetAsync<User>(user.Id, selector => selector.Index("users"));
+            result.Source.ReceivedLikes++;
+
+            await Context.UpdateAsync<User>(result.Source.Id, selector => selector.Index("users").Doc(result.Source).Refresh(Refresh.True));
+        }
     }
 }

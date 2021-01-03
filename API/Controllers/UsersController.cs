@@ -38,21 +38,23 @@ namespace API.Controllers
         {
             var userFromRepo = await UserRepository.GetByEmail(userForLoginDto.Email);
 
-            if(userFromRepo == null)
+            if (userFromRepo == null)
             {
                 return NotFound(new { message = "Nie ma takiego użytkownika!" });
             }
 
             if (userForLoginDto.Password != userFromRepo.Password)
             {
-                return Unauthorized(new {message = "Błędny login lub hasło!" });
+                return Unauthorized(new { message = "Błędny login lub hasło!" });
             }
 
-            var user = new User 
+            var user = new User
             {
                 Id = userFromRepo.Id,
                 Role = userFromRepo.Role
             };
+
+            var recipesAddedCount = NumberOfRecipesAdded(userFromRepo);
 
             var userForDisplay = new UserForDisplayDto
             {
@@ -65,8 +67,8 @@ namespace API.Controllers
                 LastLogin = userFromRepo.LastLogin,
                 Recipes = userFromRepo.Recipes,
                 Description = userFromRepo.Description,
-                DateCreated = userFromRepo.DateCreated
-                
+                DateCreated = userFromRepo.DateCreated,
+                RecipesAddedCount = recipesAddedCount
             };
 
             var token = TokenHelper.CreateToken(user);
@@ -115,6 +117,8 @@ namespace API.Controllers
                 return NotFound();
             }
 
+            var recipesAddedCount = NumberOfRecipesAdded(userFromRepo);
+
             var userForDisplay = new UserForDisplayDto
             {
                 Name = userFromRepo.Name,
@@ -124,7 +128,8 @@ namespace API.Controllers
                 PhotoPath = userFromRepo.PhotoPath,
                 LastLogin = userFromRepo.LastLogin,
                 Recipes = userFromRepo.Recipes,
-                Description = userFromRepo.Description
+                Description = userFromRepo.Description,
+                RecipesAddedCount = recipesAddedCount
             };
 
             return Ok(userForDisplay);
@@ -135,7 +140,7 @@ namespace API.Controllers
         {
             if (await UserRepository.Exists(userForCreationDto.Name, userForCreationDto.Email))
             {
-                return Conflict(new {message = "Użytkownik o takiej nazwie lub adresie email istnieje już w bazie!" });
+                return Conflict(new { message = "Użytkownik o takiej nazwie lub adresie email istnieje już w bazie!" });
             }
 
             var user = new User
@@ -151,7 +156,7 @@ namespace API.Controllers
         [HttpPost]
         [Route("update")]
         [Authorize(AuthenticationSchemes = "Bearer")]
-        public async Task<ActionResult<User>> Update([FromForm]UserForUpdateDto userForUpdateDto)
+        public async Task<ActionResult<User>> Update([FromForm] UserForUpdateDto userForUpdateDto)
         {
             var id = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
             var userForUpdate = await UserRepository.Get(Guid.Parse(id));
@@ -160,16 +165,21 @@ namespace API.Controllers
 
             if (userForUpdateDto.Photo != null)
             {
-                uniqueFileName = PhotoHelper.AddPhoto(userForUpdateDto.Photo, HttpContext, "Photos", "UserPhotos");  
+                uniqueFileName = PhotoHelper.AddPhoto(userForUpdateDto.Photo, HttpContext, "Photos", "UserPhotos");
             }
 
             userForUpdate.PhotoPath = uniqueFileName;
-            userForUpdate.Email = userForUpdateDto.Email; 
+            userForUpdate.Email = userForUpdateDto.Email;
             userForUpdate.Description = userForUpdateDto.Description;
 
             await UserRepository.Add(userForUpdate);
             return CreatedAtAction("Get", new { id = userForUpdate.Id }, userForUpdate);
         }
 
+        private int NumberOfRecipesAdded(User user)
+        {
+            int numberOfRecipes = user.Recipes.Count;
+            return numberOfRecipes;
+        }
     }
 }

@@ -274,9 +274,10 @@ namespace API.Controllers
 
             var recipe = await recipeRepository.Get(recipeIdWrapper.Id);
 
-            await AddLike(recipe);
-
             var userForRecipe = await UserRepository.Get(recipe.UserId);
+
+            await AddLike(recipe, userForRecipe);
+
             var recipeForDisplay = new RecipeForDisplayDto()
             {
                 Id = recipe.Id,
@@ -394,10 +395,11 @@ namespace API.Controllers
             await recipeRepository.DecrementInFavouriteRepository(recipe);
         }
 
-        private async Task AddLike(Recipe recipe)
+        private async Task AddLike(Recipe recipe, User user)
         {
             recipe.Likes++;
             await recipeRepository.AddLikeRepository(recipe);
+            await UserRepository.IncrementReceivedLikes(user);
         }
     }
 }

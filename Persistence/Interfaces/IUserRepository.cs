@@ -17,5 +17,6 @@ namespace Persistence.Interfaces
         Task<User> GetByEmail(string email);
         Task UpdateLoginDate(User updatedUser);
         Task<IEnumerable<Recipe>> GetUserRecipes(Guid id);
+        Task IncrementReceivedLikes(User user);
     }
 }
