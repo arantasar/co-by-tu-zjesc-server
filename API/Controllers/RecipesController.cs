@@ -62,8 +62,8 @@ namespace API.Controllers
             return Ok(recipesForDisplay);
         }
 
-        [HttpGet("{id:guid}"), ActionName("Get")]
-        public async Task<ActionResult<RecipeForDisplayDto>> Get(Guid id)
+        [HttpGet("{id:guid}/{isShoppingList:bool?}"), ActionName("Get")]
+        public async Task<ActionResult<RecipeForDisplayDto>> Get(Guid id, bool isShoppingList = false)
         {
             var recipe = await recipeRepository.Get(id);
             if (recipe == null)
@@ -71,7 +71,12 @@ namespace API.Controllers
                 return NotFound();
             }
 
-            await ViewCounterActualizer(recipe);
+            if (!isShoppingList)
+            {
+                await ViewCounterActualizer(recipe);
+            }
+
+            
 
             var userForRecipe = await UserRepository.Get(recipe.UserId);
             var recipeForDisplay = new RecipeForDisplayDto
