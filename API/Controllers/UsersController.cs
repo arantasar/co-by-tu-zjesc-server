@@ -68,7 +68,8 @@ namespace API.Controllers
                 Recipes = userFromRepo.Recipes,
                 Description = userFromRepo.Description,
                 DateCreated = userFromRepo.DateCreated,
-                RecipesAddedCount = recipesAddedCount
+                RecipesAddedCount = recipesAddedCount,
+                ReceivedLikes = userFromRepo.ReceivedLikes
             };
 
             var token = TokenHelper.CreateToken(user);
@@ -121,6 +122,7 @@ namespace API.Controllers
 
             var userForDisplay = new UserForDisplayDto
             {
+                Id = userFromRepo.Id,
                 Name = userFromRepo.Name,
                 Email = userFromRepo.Email,
                 Role = userFromRepo.Role,
@@ -129,7 +131,9 @@ namespace API.Controllers
                 LastLogin = userFromRepo.LastLogin,
                 Recipes = userFromRepo.Recipes,
                 Description = userFromRepo.Description,
-                RecipesAddedCount = recipesAddedCount
+                RecipesAddedCount = recipesAddedCount,
+                ReceivedLikes = userFromRepo.ReceivedLikes,
+                DateCreated = userFromRepo.DateCreated
             };
 
             return Ok(userForDisplay);

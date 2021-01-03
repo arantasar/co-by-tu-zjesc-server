@@ -130,6 +130,18 @@ namespace API.Controllers
                 PrepareTime = recipeForCreationDto.PrepareTime,
                 Size = recipeForCreationDto.Size
             };
+
+            var recipeForUser = new RecipeForUser { 
+                Id = recipe.Id,
+                Name = recipeForCreationDto.Name,
+                PhotoPath = uniqueFileName,
+            };
+
+            var userFromRepo = await UserRepository.Get(Guid.Parse(id));
+            userFromRepo.Recipes.Add(recipeForUser);
+            await UserRepository.Add(userFromRepo);
+            
+
             await recipeRepository.Add(recipe);
             return CreatedAtAction("Get", new { id = recipe.Id }, recipe);
         }

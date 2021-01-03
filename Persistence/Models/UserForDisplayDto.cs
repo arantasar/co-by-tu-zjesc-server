@@ -21,7 +21,7 @@ namespace Persistence.Models
         [Required]
         public Role Role { get; set; }
         public List<RecipeForFavourite> Favourites { get; set; }
-        public List<Recipe> Recipes { get; set; }
+        public List<RecipeForUser> Recipes { get; set; }
         public string PhotoPath { get; set; }
         public int DaysInService { get; set; }
         public int ReceivedLikes { get; set; }
