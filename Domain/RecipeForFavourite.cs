@@ -23,5 +23,9 @@ namespace Domain
         public string UserName { get; set; }
         public Guid UserId { get; set; }
         public int PrepareTime { get; set; }
+        public string DateAdded { get; set; } = DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss");
+        public int ViewCounter { get; set; }
+        public int InFavourite { get; set; }
+        public int Likes { get; set; }
     }
 }

@@ -221,6 +221,7 @@ namespace API.Controllers
             var user = await UserRepository.Get(Guid.Parse(userId));
 
             var recipe = await recipeRepository.Get(recipeIdWrapper.Id);
+            var author = await UserRepository.Get(recipe.UserId);
             
             // Okrojony przepis do zapisania w bazie w tablicy favourites dla użytkownika
             var recipeForFavourites = new RecipeForFavourite
@@ -230,9 +231,13 @@ namespace API.Controllers
                 Categories = recipe.Categories,
                 Diets = recipe.Diets,
                 PhotoPath = recipe.PhotoPath,
-                UserName = user.Name,
-                UserId = recipe.UserId,
-                PrepareTime = recipe.PrepareTime
+                UserName = author.Name,
+                UserId = author.Id,
+                PrepareTime = recipe.PrepareTime,
+                DateAdded = recipe.DateAdded,
+                InFavourite = recipe.InFavourite,
+                Likes = recipe.Likes,
+                ViewCounter = recipe.ViewCounter,
             };
 
             var recipeInFavourites = user.Favourites.Find(r => r.Id == recipeForFavourites.Id);
@@ -240,11 +245,13 @@ namespace API.Controllers
             if (recipeInFavourites != null)
             {
                 await DecrementInFavourite(recipe);
+                recipeForFavourites.InFavourite = recipeForFavourites.InFavourite - 1;
                 user.Favourites.Remove(recipeInFavourites);
             }
             else
             {
                 await IncrementInFavourite(recipe);
+                recipeForFavourites.InFavourite = recipeForFavourites.InFavourite + 1;
                 user.Favourites.Add(recipeForFavourites);
             }
             await UserRepository.Add(user);
