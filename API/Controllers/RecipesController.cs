@@ -152,10 +152,23 @@ namespace API.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(AuthenticationSchemes = "Bearer")]
         public async Task<IActionResult> Delete(Guid id)
         {
-            await recipeRepository.Remove(id);
-            return NoContent();
+            var userId = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            var role = HttpContext.User.FindFirst(ClaimTypes.Role).Value;
+            var recipeFromRepo = await recipeRepository.Get(id);
+            var isUserEntitled = role == Role.ADMIN.ToString() || recipeFromRepo.UserId == Guid.Parse(userId);
+            if (isUserEntitled)
+            {
+                var user = await UserRepository.Get(Guid.Parse(userId));
+                var recipeToDelete = user.Recipes.Find(recipe => recipe.Id == id);
+                var result = user.Recipes.Remove(recipeToDelete);
+                await UserRepository.Add(user);
+                await recipeRepository.Remove(id);
+                return Ok(user);
+            }
+            return Unauthorized();
         }
 
         
