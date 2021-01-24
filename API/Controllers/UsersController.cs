@@ -145,8 +145,8 @@ namespace API.Controllers
             var id = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
             var userFromRepo = await UserRepository.Get(Guid.Parse(id));
            
-
-            return Ok(userFromRepo);
+            // listę zakupów, listę przepisów żeby usunąć
+            return Ok(userFromRepo.Week);
         }
 
         [HttpPost]
