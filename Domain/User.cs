@@ -27,5 +27,6 @@ namespace Domain
         public string PhotoPath { get; set; }
         public int ReceivedLikes { get; set; }
         public string Description { get; set; }
+        public List<RecipeForWeek> Week { get; set; } = new List<RecipeForWeek>();
     }
 }

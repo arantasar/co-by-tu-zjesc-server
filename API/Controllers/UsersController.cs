@@ -139,6 +139,16 @@ namespace API.Controllers
             return Ok(userForDisplay);
         }
 
+        [HttpGet(), ActionName("GetWeek")]
+        public async Task<ActionResult<UserForDisplayDto>> GetWeek()
+        {
+            var id = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            var userFromRepo = await UserRepository.Get(Guid.Parse(id));
+           
+
+            return Ok(userFromRepo);
+        }
+
         [HttpPost]
         public async Task<ActionResult<User>> Add(UserForCreationDto userForCreationDto)
         {
@@ -178,6 +188,62 @@ namespace API.Controllers
 
             await UserRepository.Add(userForUpdate);
             return CreatedAtAction("Get", new { id = userForUpdate.Id }, userForUpdate);
+        }
+
+        [HttpPost]
+        [Route("week")]
+        [Authorize(AuthenticationSchemes = "Bearer")]
+        public async Task<ActionResult<User>> Week(Guid recipeId, int? sizeFromClient)
+        {
+            var id = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            var user = await UserRepository.Get(Guid.Parse(id));
+
+            var recipe = await RecipeRepository.Get(recipeId);
+            int size;
+
+            if (sizeFromClient != null)
+            {
+                size = (int)sizeFromClient;
+                if(size != recipe.Size)
+                {
+                    foreach(var recipeLine in recipe.RecipeLines)
+                    {
+                        recipeLine.Amount *= size / recipe.Size;
+                    }
+                }
+            }
+            else
+            {
+                size = recipe.Size;
+            }
+
+            RecipeForWeek recipeForWeek = new RecipeForWeek
+            {
+                Id = recipe.Id,
+                Name = recipe.Name,
+                RecipeLines = recipe.RecipeLines,
+                Size = size
+            };
+
+            user.Week.Add(recipeForWeek);
+
+            await UserRepository.Add(user);
+            return Ok();
+        }
+
+        [HttpDelete]
+        [Route("deleteweek")]
+        [Authorize(AuthenticationSchemes = "Bearer")]
+        public async Task<ActionResult<User>> DeleteWeek(Guid itemId)
+        {
+            var id = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            var user = await UserRepository.Get(Guid.Parse(id));
+
+            var recipeToRemove = user.Week.Find(r => r.ItemId == itemId);
+            user.Week.Remove(recipeToRemove);
+
+            await UserRepository.Add(user);
+            return Ok();
         }
 
         private int NumberOfRecipesAdded(User user)
