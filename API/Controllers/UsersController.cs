@@ -139,8 +139,11 @@ namespace API.Controllers
             return Ok(userForDisplay);
         }
 
-        [HttpGet(), ActionName("GetWeek")]
-        public async Task<ActionResult<UserForDisplayDto>> GetWeek()
+        [HttpPost()]
+        [Route("getweek")]
+        [ActionName("GetWeek")]
+        [Authorize(AuthenticationSchemes = "Bearer")]
+        public async Task<ActionResult<List<RecipeForWeek>>> GetWeek()
         {
             var id = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
             var userFromRepo = await UserRepository.Get(Guid.Parse(id));
