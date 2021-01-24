@@ -193,8 +193,10 @@ namespace API.Controllers
         [HttpPost]
         [Route("week")]
         [Authorize(AuthenticationSchemes = "Bearer")]
-        public async Task<ActionResult<User>> Week(Guid recipeId, int? sizeFromClient)
+        public async Task<ActionResult<User>> Week(AddToWeekWrapper addToWeekWrapper)
         {
+            var recipeId = addToWeekWrapper.RecipeId;
+            var sizeFromClient = addToWeekWrapper.SizeFromClient;
             var id = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
             var user = await UserRepository.Get(Guid.Parse(id));
 
