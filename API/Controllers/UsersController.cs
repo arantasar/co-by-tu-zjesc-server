@@ -227,7 +227,8 @@ namespace API.Controllers
                 Id = recipe.Id,
                 Name = recipe.Name,
                 RecipeLines = recipe.RecipeLines,
-                Size = size
+                Size = size,
+                PhotoPath = recipe.PhotoPath
             };
 
             user.Week.Add(recipeForWeek);
@@ -237,7 +238,7 @@ namespace API.Controllers
         }
 
         [HttpDelete]
-        [Route("deleteweek")]
+        [Route("deleteweek/{itemId:guid}")]
         [Authorize(AuthenticationSchemes = "Bearer")]
         public async Task<ActionResult<User>> DeleteWeek(Guid itemId)
         {

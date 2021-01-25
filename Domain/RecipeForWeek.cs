@@ -14,5 +14,6 @@ namespace Domain
         public string Name { get; set; }
         public List<RecipeLine> RecipeLines { get; set; } = new List<RecipeLine>();
         public int Size { get; set; }
+        public string PhotoPath { get; set; }
     }
 }
