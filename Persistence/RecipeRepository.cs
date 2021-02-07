@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using Persistence.Models;
 
 namespace Persistence
 {
@@ -96,7 +97,35 @@ namespace Persistence
             await Context.UpdateAsync<Recipe>(result.Source.Id, selector => selector.Index("recipes").Doc(result.Source).Refresh(Refresh.True));
         }
 
-        
+        public async Task<IEnumerable<Recipe>> Search(SearchDataDTO searchData)
+        {
+            var shoulds = searchData.Ingredients.ConvertAll<QueryContainer>(i => new MatchQuery
+            {
+                Field = "recipeLines.ingredient.id",
+                Query = i.Id
+            });
 
+            var categories = searchData.Categories.ConvertAll<string>(c => c.Id);
+            var diets = searchData.Diets.ConvertAll<string>(d => d.Id);
+
+            var result = await Context.SearchAsync<Recipe>(s => s
+                .Index("recipes")
+                .Query(q => q
+                    .Bool(b => b
+                        .Should(shoulds.ToArray())
+                        .Filter(new TermsQuery { 
+                            Field = "categories.id.keyword",
+                            Terms = categories
+                        }, new TermsQuery
+                        {
+                            Field = "diets.id.keyword",
+                            Terms = diets
+                        })
+                        .MinimumShouldMatch(1)
+                )
+            ));
+
+            return new List<Recipe>(result.Documents);
+        }
     }
 }

@@ -7,7 +7,7 @@ namespace Domain
 {
     public class SearchItem
     {
-        public Guid Id { get; set; } = Guid.NewGuid();
+        public string Id { get; set; }
         [Required]
         [MaxLength(60)]
         public string Name { get; set; }

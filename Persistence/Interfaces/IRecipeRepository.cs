@@ -13,6 +13,7 @@ namespace Persistence.Interfaces
         Task Remove(Guid id);
         Task<Recipe> Get(Guid id);
         Task<IEnumerable<Recipe>> List();
+        Task<IEnumerable<Recipe>> Search(SearchDataDTO searchData);
         Task<bool> Exists(string name);
         Task<bool> Exists(Guid id);
         Task VievCounterRepositoryActualizer(Recipe recipe);
