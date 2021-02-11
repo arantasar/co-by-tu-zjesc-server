@@ -32,7 +32,13 @@ namespace API.Controllers
                     if (requiredSize != r.Size)
                     {
                         float factor = requiredSize / (float)r.Size;
-                        r.RecipeLines.ForEach(line => line.Amount *= factor);
+                        r.RecipeLines.ForEach(line => {
+                            line.Amount *= factor;
+                            if (line.Amount % 1 != 0)
+                            {
+                                line.Amount = (float)Math.Round(line.Amount, 2);
+                            }
+                        });
                     }
                 });
             }
