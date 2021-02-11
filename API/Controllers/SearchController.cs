@@ -31,7 +31,7 @@ namespace API.Controllers
                     var requiredSize = Int32.Parse(searchData.Size[0].Id);
                     if (requiredSize != r.Size)
                     {
-                        float factor = requiredSize / r.Size;
+                        float factor = requiredSize / (float)r.Size;
                         r.RecipeLines.ForEach(line => line.Amount *= factor);
                     }
                 });
