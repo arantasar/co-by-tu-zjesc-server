@@ -27,8 +27,8 @@ namespace API.Controllers
             var recipes = await RecipeRepository.Search(searchData);
             if (searchData.Size[0] != null)
             {
+                var requiredSize = Int32.Parse(searchData.Size[0].Id);
                 recipes.ToList().ForEach(r => {
-                    var requiredSize = Int32.Parse(searchData.Size[0].Id);
                     if (requiredSize != r.Size)
                     {
                         float factor = requiredSize / (float)r.Size;
@@ -36,7 +36,7 @@ namespace API.Controllers
                             line.Amount *= factor;
                             if (line.Amount % 1 != 0)
                             {
-                                line.Amount = MathF.Round(line.Amount, 1);
+                                line.Amount = MathF.Round(line.Amount, 2);
                             }
                         });
                     }
