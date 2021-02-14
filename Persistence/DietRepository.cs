@@ -54,6 +54,7 @@ namespace Persistence
             var result = await Context.SearchAsync<Diet>(item => item
                .Index("diets")
                .MatchAll()
+               .Size(100)
                .Sort(ss => ss.Ascending(p => p.Name.Suffix("keyword")))
            );
 

@@ -88,7 +88,7 @@ namespace Persistence
             var recipes = await Context.SearchAsync<Recipe>(
                 s => s.Index("recipes").Query(
                                 q => q.Term(
-                                    p => p.UserId.Suffix("keyword"), id)));
+                                    p => p.UserId.Suffix("keyword"), id)).Size(1000));
 
             return recipes.Documents;
         }

@@ -55,6 +55,7 @@ namespace Persistence
             var result = await Context.SearchAsync<Category>(item => item
                .Index("categories")
                .MatchAll()
+               .Size(100)
                .Sort(ss => ss.Ascending(p => p.Name.Suffix("keyword")))
            );
 

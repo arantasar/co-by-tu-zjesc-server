@@ -48,6 +48,7 @@ namespace Persistence
             var result = await Context.SearchAsync<Ingredient>(item => item
                 .Index("ingredients")
                 .MatchAll()
+                .Size(1000)
                 .Sort(ss => ss.Ascending(p => p.Name.Suffix("keyword")))
             );
             return new List<Ingredient>(result.Documents);
