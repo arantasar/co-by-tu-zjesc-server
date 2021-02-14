@@ -199,7 +199,7 @@ namespace API.Controllers
         public async Task<ActionResult<User>> Week(AddToWeekWrapper addToWeekWrapper)
         {
             var recipeId = addToWeekWrapper.RecipeId;
-            var sizeFromClient = addToWeekWrapper.SizeFromClient;
+            var sizeFromClient = addToWeekWrapper.Size;
             var id = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
             var user = await UserRepository.Get(Guid.Parse(id));
 
@@ -208,12 +208,12 @@ namespace API.Controllers
 
             if (sizeFromClient != null)
             {
-                size = (int)sizeFromClient;
+                size = Int32.Parse(sizeFromClient);
                 if(size != recipe.Size)
                 {
                     foreach(var recipeLine in recipe.RecipeLines)
                     {
-                        recipeLine.Amount *= size / recipe.Size;
+                        recipeLine.Amount *= (float)size / recipe.Size;
                     }
                 }
             }

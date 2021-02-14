@@ -7,6 +7,6 @@ namespace Persistence.Models
     public class AddToWeekWrapper
     {
         public Guid RecipeId { get; set; }
-        public int? SizeFromClient { get; set; }
+        public string Size { get; set; }
     }
 }

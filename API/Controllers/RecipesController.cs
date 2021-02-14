@@ -62,21 +62,15 @@ namespace API.Controllers
             return Ok(recipesForDisplay);
         }
 
-        [HttpGet("{id:guid}/{isShoppingList:bool?}"), ActionName("Get")]
-        public async Task<ActionResult<RecipeForDisplayDto>> Get(Guid id, bool isShoppingList = false)
+        [HttpGet("{id:guid}")]
+        public async Task<ActionResult<RecipeForDisplayDto>> Get(Guid id)
         {
             var recipe = await recipeRepository.Get(id);
+
             if (recipe == null)
             {
                 return NotFound();
             }
-
-            if (!isShoppingList)
-            {
-                await ViewCounterActualizer(recipe);
-            }
-
-            
 
             var userForRecipe = await UserRepository.Get(recipe.UserId);
             var recipeForDisplay = new RecipeForDisplayDto
@@ -92,7 +86,7 @@ namespace API.Controllers
                 Categories = recipe.Categories,
                 Diets = recipe.Diets,
                 PhotoPath = recipe.PhotoPath,
-                User = new UserForRecipeDto {Id = userForRecipe.Id, Name = userForRecipe.Name, PhotoPath = userForRecipe.PhotoPath },
+                User = new UserForRecipeDto { Id = userForRecipe.Id, Name = userForRecipe.Name, PhotoPath = userForRecipe.PhotoPath },
                 UserId = recipe.UserId,
                 PrepareTime = recipe.PrepareTime,
                 Size = recipe.Size
@@ -100,6 +94,96 @@ namespace API.Controllers
 
             return Ok(recipeForDisplay);
         }
+
+        [HttpGet("{id:guid}/{size:int}/{isShoppingList:bool?}"), ActionName("Get")]
+        public async Task<ActionResult<RecipeForDisplayDto>> Get(Guid id, int size, bool isShoppingList = false)
+        { 
+            var recipe = await recipeRepository.Get(id);
+
+            if (recipe == null)
+            {
+                return NotFound();
+            }
+
+            if (!isShoppingList)
+            {
+                await ViewCounterActualizer(recipe);
+            }
+
+            if (size != recipe.Size)
+            {
+                float factor = size / (float)recipe.Size;
+                recipe.Size = size;
+                recipe.RecipeLines.ForEach(line => {
+                    line.Amount *= factor;
+                    if (line.Amount % 1 != 0)
+                    {
+                        line.Amount = MathF.Round(line.Amount, 2);
+                    }
+                });
+            }
+
+            var userForRecipe = await UserRepository.Get(recipe.UserId);
+            var recipeForDisplay = new RecipeForDisplayDto
+            {
+                Id = recipe.Id,
+                Name = recipe.Name,
+                Description = recipe.Description,
+                RecipeLines = recipe.RecipeLines,
+                DateAdded = recipe.DateAdded,
+                ViewCounter = recipe.ViewCounter,
+                InFavourite = recipe.InFavourite,
+                Likes = recipe.Likes,
+                Categories = recipe.Categories,
+                Diets = recipe.Diets,
+                PhotoPath = recipe.PhotoPath,
+                User = new UserForRecipeDto { Id = userForRecipe.Id, Name = userForRecipe.Name, PhotoPath = userForRecipe.PhotoPath },
+                UserId = recipe.UserId,
+                PrepareTime = recipe.PrepareTime,
+                Size = recipe.Size
+            };
+
+            return Ok(recipeForDisplay);
+        }
+
+        //[HttpGet("{id:guid}/{isShoppingList:bool?}"), ActionName("Get")]
+        //public async Task<ActionResult<RecipeForDisplayDto>> Get(Guid id, bool isShoppingList = false)
+        //{
+        //    var recipe = await recipeRepository.Get(id);
+        //    if (recipe == null)
+        //    {
+        //        return NotFound();
+        //    }
+
+        //    if (!isShoppingList)
+        //    {
+        //        await ViewCounterActualizer(recipe);
+        //    }
+
+            
+
+        //    var userForRecipe = await UserRepository.Get(recipe.UserId);
+        //    var recipeForDisplay = new RecipeForDisplayDto
+        //    {
+        //        Id = recipe.Id,
+        //        Name = recipe.Name,
+        //        Description = recipe.Description,
+        //        RecipeLines = recipe.RecipeLines,
+        //        DateAdded = recipe.DateAdded,
+        //        ViewCounter = recipe.ViewCounter,
+        //        InFavourite = recipe.InFavourite,
+        //        Likes = recipe.Likes,
+        //        Categories = recipe.Categories,
+        //        Diets = recipe.Diets,
+        //        PhotoPath = recipe.PhotoPath,
+        //        User = new UserForRecipeDto {Id = userForRecipe.Id, Name = userForRecipe.Name, PhotoPath = userForRecipe.PhotoPath },
+        //        UserId = recipe.UserId,
+        //        PrepareTime = recipe.PrepareTime,
+        //        Size = recipe.Size
+        //    };
+
+        //    return Ok(recipeForDisplay);
+        //}
 
         [HttpPost]
         [Authorize(AuthenticationSchemes = "Bearer")]
