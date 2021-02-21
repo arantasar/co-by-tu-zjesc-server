@@ -72,6 +72,8 @@ namespace API.Controllers
                 return NotFound();
             }
 
+            await ViewCounterActualizer(recipe);
+
             var userForRecipe = await UserRepository.Get(recipe.UserId);
             var recipeForDisplay = new RecipeForDisplayDto
             {
@@ -95,10 +97,11 @@ namespace API.Controllers
             return Ok(recipeForDisplay);
         }
 
-        [HttpGet("{id:guid}/{size:int}/{isShoppingList:bool?}"), ActionName("Get")]
-        public async Task<ActionResult<RecipeForDisplayDto>> Get(Guid id, int size, bool isShoppingList = false)
+        [HttpGet("{id:guid}/{size}/{isShoppingList:bool?}"), ActionName("Get")]
+        public async Task<ActionResult<RecipeForDisplayDto>> Get(Guid id, string size, bool isShoppingList = false)
         { 
             var recipe = await recipeRepository.Get(id);
+            int sizeInt = 0;
 
             if (recipe == null)
             {
@@ -110,10 +113,15 @@ namespace API.Controllers
                 await ViewCounterActualizer(recipe);
             }
 
-            if (size != recipe.Size)
+            if (size != "undefined")
             {
-                float factor = size / (float)recipe.Size;
-                recipe.Size = size;
+                sizeInt = Int32.Parse(size);
+            }
+
+            if (sizeInt != 0 && sizeInt != recipe.Size)
+            {
+                float factor = sizeInt / (float)recipe.Size;
+                recipe.Size = sizeInt;
                 recipe.RecipeLines.ForEach(line => {
                     line.Amount *= factor;
                     if (line.Amount % 1 != 0)
