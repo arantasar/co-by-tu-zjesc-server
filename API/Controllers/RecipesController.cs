@@ -294,12 +294,17 @@ namespace API.Controllers
                 uniqueFileName = PhotoHelper.AddPhoto(recipeForUpdateDto.Photo, HttpContext, "Photos", "RecipePhotos");
             }
 
+            var serializeOptions = new JsonSerializerOptions
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+            };
+
             recipeForUpdate.PhotoPath = uniqueFileName;
             recipeForUpdate.Name = recipeForUpdateDto.Name;
             recipeForUpdate.Description = recipeForUpdateDto.Description;
-            recipeForUpdate.RecipeLines = recipeForUpdateDto.RecipeLines;
-            recipeForUpdate.Categories = recipeForUpdateDto.Categories;
-            recipeForUpdate.Diets = recipeForUpdateDto.Diets;
+            recipeForUpdate.RecipeLines = JsonSerializer.Deserialize<List<RecipeLine>>(recipeForUpdateDto.RecipeLines, serializeOptions);
+            recipeForUpdate.Categories = JsonSerializer.Deserialize<List<Category>>(recipeForUpdateDto.Categories, serializeOptions);
+            recipeForUpdate.Diets = JsonSerializer.Deserialize<List<Diet>>(recipeForUpdateDto.Diets, serializeOptions);
             recipeForUpdate.PrepareTime = recipeForUpdateDto.PrepareTime;
             recipeForUpdate.Size = recipeForUpdateDto.Size;
 

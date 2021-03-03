@@ -17,10 +17,10 @@ namespace Persistence.Models
         [Required]
         [MaxLength(3000)]
         public string Description { get; set; }
-        public List<RecipeLine> RecipeLines { get; set; }
+        public string RecipeLines { get; set; }
         [Required]
-        public List<Category> Categories { get; set; }
-        public List<Diet> Diets { get; set; }
+        public string Categories { get; set; }
+        public string Diets { get; set; }
         public IFormFile Photo { get; set; }
         public int PrepareTime { get; set; }
         public int Size { get; set; }
