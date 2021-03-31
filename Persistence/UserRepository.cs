@@ -56,7 +56,26 @@ namespace Persistence
         public async Task<User> Get(Guid id)
         {
             var result = await Context.GetAsync<User>(id, selector => selector.Index("users"));
-            return result.Source;
+            var user = result.Source;
+            if (result.Source.Recipes.Count > 0) {
+                var ids = result.Source.Recipes.Select(recipe => recipe.Id.ToString()).ToArray();
+                var recipes = await Context.GetManyAsync<Recipe>(ids, "recipes");
+                var found = recipes.ToList().FindAll(item => item.Found);
+                if (found.Count > 0)
+                {
+                    user.Recipes = found.Select(item => item.Source).Select(
+                    recipe => new RecipeForUser
+                    {
+                        Id = recipe.Id,
+                        InFavourite = recipe.InFavourite,
+                        Likes = recipe.Likes,
+                        Name = recipe.Name,
+                        PhotoPath = recipe.PhotoPath,
+                        ViewCounter = recipe.ViewCounter
+                    }).ToList();
+                }
+            }
+            return user;
         }
 
         public async Task<IEnumerable<User>> List()

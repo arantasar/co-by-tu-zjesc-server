@@ -16,5 +16,9 @@ namespace Domain
         // to do
         //public List<string> PhotosPath { get; set; } = new List<string>();
         public string PhotoPath { get; set; }
+        public int Likes { get; set; }
+        public int InFavourite { get; set; }
+
+        public int ViewCounter { get; set; }
     }
 }
