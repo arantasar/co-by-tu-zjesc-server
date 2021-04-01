@@ -6,6 +6,7 @@ using Persistence.Interfaces;
 using Persistence.Models;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Security.Claims;
 using System.Text.Json;
@@ -441,7 +442,7 @@ namespace API.Controllers
             var recipesForDisplay = new List<RecipeForDisplayDto>();
             Recipe[] recipesSortedByDate = new Recipe[] {};
 
-            recipesSortedByDate = recipes.OrderByDescending(o => DateTime.Parse(o.DateAdded)).ToArray();
+            recipesSortedByDate = recipes.OrderByDescending(o => DateTime.ParseExact(o.DateAdded, "dd.MM.yyyy HH:mm:ss", CultureInfo.InvariantCulture)).ToArray();
 
             var arrayRange = Math.Min(amount, recipesSortedByDate.Length);
             
