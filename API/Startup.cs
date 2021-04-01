@@ -25,9 +25,11 @@ namespace API
     public class Startup
     {
         public IConfiguration Configuration { get; }
-        public Startup(IConfiguration configuration)
+        public IWebHostEnvironment WebHostEnvironment { get; }
+        public Startup(IConfiguration configuration, IWebHostEnvironment webHostEnvironment)
         {
             Configuration = configuration;
+            WebHostEnvironment = webHostEnvironment;
         }
 
         // This method gets called by the runtime. Use this method to add services to the container.
@@ -39,7 +41,17 @@ namespace API
             Configuration.Bind("Elasticsearch", elasticsearchOptions);
             Configuration.Bind("Jwt", jwtOptions);
 
-            var elastic = new ElasticClient(new Uri(elasticsearchOptions.Uri));            
+            var elastic = new ElasticClient(new Uri(elasticsearchOptions.Uri));
+            string corsUrl;
+
+            if (WebHostEnvironment.IsProduction())
+            {
+                corsUrl = "http://cobytuzjesc.pl";
+            } 
+            else
+            {
+                corsUrl = "http://localhost:3000";
+            }
 
             services.AddControllers();
             services.AddSingleton<IUnitRepository, UnitRepository>();
@@ -55,8 +67,8 @@ namespace API
             services.AddCors(setupAction =>
             {
                 setupAction.AddPolicy("cors", policy =>
-                {
-                    policy.AllowAnyHeader().AllowAnyMethod().WithOrigins("http://localhost:3000");
+                {                    
+                    policy.AllowAnyHeader().AllowAnyMethod().WithOrigins(corsUrl);
                 });
             });
             services.AddControllers().AddJsonOptions(options =>
