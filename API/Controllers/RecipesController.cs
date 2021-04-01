@@ -442,7 +442,7 @@ namespace API.Controllers
             var recipesForDisplay = new List<RecipeForDisplayDto>();
             Recipe[] recipesSortedByDate = new Recipe[] {};
 
-            recipesSortedByDate = recipes.OrderByDescending(o => DateTime.ParseExact(o.DateAdded, "dd.MM.yyyy HH:mm:ss", CultureInfo.InvariantCulture)).ToArray();
+            recipesSortedByDate = recipes.OrderByDescending(o => DateTime.ParseExact(o.DateAdded, "dd/MM/yyyy HH:mm:ss", CultureInfo.InvariantCulture)).ToArray();
 
             var arrayRange = Math.Min(amount, recipesSortedByDate.Length);
             
